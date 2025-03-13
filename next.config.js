@@ -5,7 +5,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   poweredByHeader: false,
-  webpack(config: { devtool: boolean; }, { dev, isServer }: any) {
+  webpack(config, { dev, isServer }) {
     if (!dev && !isServer) {
       // ปิดการสร้าง source maps ใน production
       config.devtool = false;

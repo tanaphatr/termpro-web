@@ -1,0 +1,80 @@
+// @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+// @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@40,300,0,0');
+
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+/* :root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+} */
+
+body,
+html {
+  min-height: 100vh;
+  color: #333;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+// @font-face {
+//   font-family: 'TH Sarabun New';
+//   src: url('/fonts/th_sarabun_new/THSarabunNew.woff2') format('woff2'),
+//     url('/fonts/th_sarabun_new/THSarabunNew.woff') format('woff');
+//   font-weight: normal;
+//   font-style: normal;
+// }
+
+.ql-snow .ql-editor {
+  height: 300px;
+  resize: vertical;
+}
+
+.ql-snow .ql-picker.ql-size.ql-expanded .ql-picker-options {
+  overflow-y: auto;
+  height: 200px;
+}
+
+.ql-toolbar.ql-snow .ql-formats {
+  margin-right: 16px;
+}
+
+.ql-table .ql-picker-options [data-value="insert-table"]:before {
+  content: "Insert Table";
+}
+
+.ql-size .ql-picker-label[data-label]::before,
+.ql-size .ql-picker-item[data-label]::before {
+  content: attr(data-label) !important;
+}
+
+.ql-table .ql-picker-label[data-label]::before {
+  content: "Table";
+}
+// .ql-table .ql-picker-label[data-label]::before,
+.ql-table .ql-picker-item[data-label]::before {
+  content: attr(data-label) !important;
+}
