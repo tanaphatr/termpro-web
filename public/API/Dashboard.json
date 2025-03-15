@@ -1,0 +1,20 @@
+{
+  "salesData": [
+    { "name": "2024-10-01", "Sales": 50000, "profit": 20000 },
+    { "name": "2024-10-02", "Sales": 70000, "profit": 40000 },
+    { "name": "2024-10-03", "Sales": 80000, "profit": 30000 },
+    { "name": "2024-10-04", "Sales": 60000, "profit": 50000 },
+    { "name": "2024-10-05", "Sales": 90000, "profit": 70000 }
+  ],
+  "productData": [
+    { "productcode": "A", "productname": "Product A", "quantity": 15000 },
+    { "productcode": "B", "productname": "Product B", "quantity": 25000 },
+    { "productcode": "C", "productname": "Product C", "quantity": 10000 },
+    { "productcode": "D", "productname": "Product D", "quantity": 30000 },
+    { "productcode": "E", "productname": "Product E", "quantity": 20000 }
+  ],
+  "yesterdaySales": 5439.0,
+  "yesterdayPrediction": 10687.5,
+  "todaySales": 7138.78,
+  "todayDate": "2024-10-11"
+}
