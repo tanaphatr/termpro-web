@@ -38,7 +38,7 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
         >
             <Toolbar sx={{ display: 'flex', alignItems: 'center' }}>
                 <Avatar alt={user.name} src={user.avatarUrl} />
-                <Typography sx={{ fontSize: '16px' ,paddingLeft: '20px'}} noWrap>
+                <Typography sx={{ fontSize: '16px', paddingLeft: '20px' }} noWrap>
                     {user.name}
                 </Typography>
             </Toolbar>
@@ -61,10 +61,10 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
                                 },
                             }}
                         >
-                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemIcon >{item.icon}</ListItemIcon>
                             <ListItemText
                                 primary={
-                                    <Typography sx={{ fontSize: '16px' }}>
+                                    <Typography sx={{ fontSize: '14px' }}>
                                         {item.text}
                                     </Typography>
                                 }
@@ -82,7 +82,7 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
                         </ListItemIcon>
                         <ListItemText
                             primary={
-                                <Typography sx={{ fontSize: '16px' }}>
+                                <Typography sx={{ fontSize: '14px' }}>
                                     ออกจากระบบ
                                 </Typography>
                             }

@@ -7,10 +7,26 @@ import SaleReportIcon from '@mui/icons-material/Assessment';
 import EmployeeIcon from '@mui/icons-material/People';
 
 const menuItems = [
-    { text: 'แดชบอร์ด', path: '/backhouse/dashboard', icon: <DashboardIcon /> },
-    { text: 'สินค้า', path: '/backhouse/products', icon: <ProductsIcon /> },
-    { text: 'รายงานยอดขาย', path: '/backhouse/sale-report', icon: <SaleReportIcon /> },
-    { text: 'พนักงาน', path: '/backhouse/employee', icon: <EmployeeIcon /> },
+    {
+        text: 'แดชบอร์ด',
+        path: '/backhouse/dashboard',
+        icon: <DashboardIcon />
+    },
+    {
+        text: 'สินค้า',
+        path: '/backhouse/products',
+        icon: <ProductsIcon />
+    },
+    {
+        text: 'รายงานยอดขาย',
+        path: '/backhouse/sale-report',
+        icon: <SaleReportIcon />
+    },
+    {
+        text: 'พนักงาน',
+        path: '/backhouse/employee',
+        icon: <EmployeeIcon />
+    },
 ];
 
 export default function RootLayout({
@@ -25,7 +41,7 @@ export default function RootLayout({
                 name: "สงพง สงวนสุข",
                 avatarUrl: ""
             }} />
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}></Box>
+            {children}
         </Box>
     );
 }
