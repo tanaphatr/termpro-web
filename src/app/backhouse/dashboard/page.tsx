@@ -32,7 +32,9 @@ export default function Dashboard() {
   }
 
   return (
-    <PageLayout>
+    <PageLayout
+      title="แดชบอร์ด"
+    >
       <Formdashboard
         salesData={data.salesData}
         productData={data.productData}

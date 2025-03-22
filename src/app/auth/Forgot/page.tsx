@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Fragment, useState } from 'react';
-import { Container, TextField, Button, Typography, Box, IconButton, InputAdornment } from '@mui/material';
+import { Container, TextField, Button, Typography, Grid, IconButton, InputAdornment } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -20,14 +20,14 @@ export default function LoginPage() {
 
   return (
     <Fragment>
-      <Box
-        display="flex"
+      <Grid
+        container
         justifyContent="flex-end"
         alignItems="center"
         minHeight="100vh"
       >
         <Container maxWidth="sm" sx={{ backgroundColor: '#f5f5f5', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)' }}>
-          <Box>
+          <Grid container direction="column">
             <Typography sx={{ fontSize: '24px', fontWeight: 'bold', alignSelf: 'flex-start', marginBottom: '16px' }}>
               ลงชื่อเข้าใช้
             </Typography>
@@ -74,9 +74,9 @@ export default function LoginPage() {
             >
               เข้าสู่ระบบ
             </Button>
-          </Box>
+          </Grid>
         </Container>
-      </Box>
+      </Grid>
     </Fragment>
   );
 }

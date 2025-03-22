@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Drawer, List, ListItem, ListItemText, ListItemIcon, Toolbar, Divider, Typography, Box, ListItemButton, Avatar } from '@mui/material';
+import { Drawer, List, ListItem, ListItemText, ListItemIcon, Toolbar, Divider, Typography, Grid, ListItemButton, Avatar } from '@mui/material';
 import ExitToApp from '@mui/icons-material/ExitToApp';
 import { useRouter } from "next/navigation";
 
@@ -73,7 +73,7 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
                     </ListItem>
                 ))}
             </List>
-            <Box sx={{ flexGrow: 1 }} />
+            <Grid sx={{ flexGrow: 1 }} />
             <List>
                 <ListItem disablePadding>
                     <ListItemButton onClick={handleLogout}>

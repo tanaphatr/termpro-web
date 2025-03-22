@@ -6,7 +6,7 @@ import {
   TextField,
   Button,
   Typography,
-  Box,
+  Grid,
   IconButton,
   InputAdornment,
 } from "@mui/material";
@@ -28,8 +28,8 @@ export default function LoginPage() {
 
   return (
     <Fragment>
-      <Box
-        display="flex"
+      <Grid
+        container
         justifyContent="flex-end"
         alignItems="center"
         minHeight="100vh"
@@ -43,7 +43,7 @@ export default function LoginPage() {
             boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
           }}
         >
-          <Box>
+          <Grid item xs={12}>
             <Typography
               sx={{
                 fontSize: "24px",
@@ -104,9 +104,9 @@ export default function LoginPage() {
             >
               เข้าสู่ระบบ
             </Button>
-          </Box>
+          </Grid>
         </Container>
-      </Box>
+      </Grid>
     </Fragment>
   );
 }
