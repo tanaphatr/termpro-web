@@ -27,86 +27,88 @@ export default function LoginPage() {
   };
 
   return (
-    <Fragment>
-      <Grid
-        container
-        justifyContent="flex-end"
-        alignItems="center"
-        minHeight="100vh"
+    <Grid
+      container
+      justifyContent="flex-end"
+      alignItems="center"
+      sx={{
+        height: "100vh",
+        display: "flex",
+        overflow: "hidden",
+      }}
+    >
+      <Container
+        maxWidth="sm"
+        sx={{
+          backgroundColor: "#f5f5f5",
+          padding: "20px",
+          borderRadius: "8px",
+          boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        }}
       >
-        <Container
-          maxWidth="sm"
-          sx={{
-            backgroundColor: "#f5f5f5",
-            padding: "20px",
-            borderRadius: "8px",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-          }}
-        >
-          <Grid item xs={12}>
-            <Typography
-              sx={{
-                fontSize: "24px",
-                fontWeight: "bold",
-                alignSelf: "flex-start",
-                marginBottom: "16px",
-              }}
-            >
-              ลงชื่อเข้าใช้
-            </Typography>
-            <Typography sx={{ fontSize: "16px", alignSelf: "flex-start" }}>
-              บัญชีผู้ใช้
-            </Typography>
-            <TextField
-              label="อีเมล"
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              sx={{ height: "45px", marginBottom: "32px" }}
-            />
-            <Typography sx={{ fontSize: "16px", alignSelf: "flex-start" }}>
-              รหัสผ่าน
-            </Typography>
-            <TextField
-              label="รหัสผ่าน"
-              type={showPassword ? "text" : "password"}
-              variant="outlined"
-              margin="normal"
-              fullWidth
-              sx={{ height: "60px", marginBottom: "24px" }}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      edge="end"
-                    >
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleLogin}
-              fullWidth
-              sx={{
-                height: "55px",
-                width: "100%",
-                backgroundColor: "#1976d2",
-                "&:hover": { backgroundColor: "#1565c0" },
-                fontSize: "16px",
-                fontWeight: "bold",
-              }}
-            >
-              เข้าสู่ระบบ
-            </Button>
-          </Grid>
-        </Container>
-      </Grid>
-    </Fragment>
+        <Grid item xs={12}>
+          <Typography
+            sx={{
+              fontSize: "24px",
+              fontWeight: "bold",
+              alignSelf: "flex-start",
+              marginBottom: "16px",
+            }}
+          >
+            ลงชื่อเข้าใช้
+          </Typography>
+          <Typography sx={{ fontSize: "16px", alignSelf: "flex-start" }}>
+            บัญชีผู้ใช้
+          </Typography>
+          <TextField
+            label="อีเมล"
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            sx={{ height: "45px", marginBottom: "32px" }}
+          />
+          <Typography sx={{ fontSize: "16px", alignSelf: "flex-start" }}>
+            รหัสผ่าน
+          </Typography>
+          <TextField
+            label="รหัสผ่าน"
+            type={showPassword ? "text" : "password"}
+            variant="outlined"
+            margin="normal"
+            fullWidth
+            sx={{ height: "60px", marginBottom: "24px" }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    edge="end"
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleLogin}
+            fullWidth
+            sx={{
+              height: "55px",
+              width: "100%",
+              backgroundColor: "#1976d2",
+              "&:hover": { backgroundColor: "#1565c0" },
+              fontSize: "16px",
+              fontWeight: "bold",
+            }}
+          >
+            เข้าสู่ระบบ
+          </Button>
+        </Grid>
+      </Container>
+    </Grid>
   );
 }

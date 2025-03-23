@@ -30,7 +30,7 @@ export default function CreateProduct() {
                 <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />
             ]}>
             <FormProvider {...methods}>
-                <Formproduct />
+                <Formproduct title='เพิ่มสินค้า'></Formproduct>
             </FormProvider>
         </PageLayout>
     )
