@@ -11,7 +11,7 @@ import {
     Button,
     IconButton,
 } from "@mui/material";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ButtonAdd from "@/components/ButtonAdd";
@@ -50,12 +50,21 @@ export default function FormReport({
         register,
         control,
         formState: { errors },
+        setValue,
+        watch,
     } = useFormContext<FormReportValues>();
 
     const { fields, append, remove } = useFieldArray({
         control,
         name: "products",
     });
+
+    const products = watch("products");
+
+    useEffect(() => {
+        const total = products.reduce((acc, product) => acc + (parseFloat(product.price) || 0), 0);
+        setValue("total", total.toFixed(2));
+    }, [products, setValue]);
 
     return (
         <Fragment>
@@ -73,12 +82,16 @@ export default function FormReport({
                             disabled={true}
                             error={!!errors.total}
                             helperText={errors.total ? errors.total.message : ""}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
                         />
                     </Grid>
                     <Grid item xs={4}>
                         <TextField
                             label="Date"
                             {...register("date")}
+                            value={new Date().toISOString().split('T')[0]}
                             type="date"
                             fullWidth
                             margin="normal"
@@ -95,7 +108,7 @@ export default function FormReport({
                 <Grid container spacing={2}>
                     <Grid item xs={12} sx={{ marginTop: 2 }}>
                         <Divider />
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>กรอกยอดขายสินค้า</Typography>
+                        <Typography variant="h6" sx={{ marginTop: 2 }}>กรอกยอดขายสินค้า | จำนวน: {fields.length}</Typography>
                     </Grid>
                     {fields.map((item, index) => (
                         <Fragment key={item.id}>
@@ -134,8 +147,8 @@ export default function FormReport({
                                     {...register(`products.${index}.price`)}
                                     type="number"
                                     fullWidth
-                                    margin="normal"
                                     disabled={true}
+                                    margin="normal"
                                     error={!!errors.products?.[index]?.price}
                                     helperText={errors.products?.[index]?.price ? errors.products[index].price.message : ""}
                                 />
