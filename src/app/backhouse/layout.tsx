@@ -9,22 +9,22 @@ import EmployeeIcon from '@mui/icons-material/People';
 const menuItems = [
     {
         text: 'แดชบอร์ด',
-        path: '/backhouse/dashboard',
+        href: '/backhouse/dashboard',
         icon: <DashboardIcon />
     },
     {
         text: 'สินค้า',
-        path: '/backhouse/products',
+        href: '/backhouse/products',
         icon: <ProductsIcon />
     },
     {
         text: 'รายงานยอดขาย',
-        path: '/backhouse/sale-report',
+        href: '/backhouse/sale-report',
         icon: <SaleReportIcon />
     },
     {
         text: 'พนักงาน',
-        path: '/backhouse/employee',
+        href: '/backhouse/employee',
         icon: <EmployeeIcon />
     },
 ];

@@ -8,9 +8,9 @@ import ButtonAdd from '@/components/ButtonAdd';
 import { useRouter } from 'next/navigation';
 
 const products = [
-  { id: 1, productCode: 'P001', name: 'Product 1', price: 100, profit: 50, quantity: 10 },
-  { id: 2, productCode: 'P002', name: 'Product 2', price: 200, profit: 50, quantity: 20 },
-  { id: 3, productCode: 'P003', name: 'Product 3', price: 300, profit: 50, quantity: 30 },
+  { id: '1', productCode: 'P001', name: 'Product 1', price: 100, profit: 50, quantity: 10 },
+  { id: '2', productCode: 'P002', name: 'Product 2', price: 200, profit: 50, quantity: 20 },
+  { id: '3', productCode: 'P003', name: 'Product 3', price: 300, profit: 50, quantity: 30 },
 ]
 
 export default function Products() {
@@ -20,7 +20,7 @@ export default function Products() {
     router.push('products/create');
   }
 
-  const handleClickView = (id: number) => {
+  const handleClickView = (id: string) => {
     router.push(`products/${id}`);
   }
 

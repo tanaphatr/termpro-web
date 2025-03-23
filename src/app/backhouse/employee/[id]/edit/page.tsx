@@ -3,26 +3,26 @@
 import PageLayout from '@/components/layouts/PageLayout';
 import { useRouter } from 'next/navigation';
 import React from 'react'
-import Formproduct, { defaultProductValues, FormProductValues } from '../../components/Formproduct';
+import Formemployee, { defaultEmployeeValues, FormEmployeeValues } from '../../components/Formemployee';
 import { useForm, FormProvider } from 'react-hook-form';
 import ButtonAdd from '@/components/ButtonAdd';
 
-type ProductDetailPageProps = {
+type EmployeeDetailPageProps = {
     params: {
         id: string;
     };
 };
 
-export default function ProductDetail(props: ProductDetailPageProps) {
+export default function EmployeeDetail(props: EmployeeDetailPageProps) {
     const { id: ID } = props.params
     const router = useRouter();
 
-    const methods = useForm<FormProductValues>({
-        defaultValues: defaultProductValues,
+    const methods = useForm<FormEmployeeValues>({
+        defaultValues: defaultEmployeeValues,
     });
 
     const handleOnBack = () => {
-        router.push(`/backhouse/products/${ID}`);
+        router.push(`/backhouse/employee/${ID}`);
     }
 
     const handleSubmit = () => {
@@ -31,12 +31,12 @@ export default function ProductDetail(props: ProductDetailPageProps) {
         })();
     }
     return (
-        <PageLayout title="รายละเอียดสินค้า" onBack={handleOnBack}
+        <PageLayout title="แก้ไขรายละเอียดพนักงาน" onBack={handleOnBack}
             buttons={[
                 <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />
             ]}>
             <FormProvider {...methods}>
-                <Formproduct title='รายละเอียดสินค้า' mode='edit'></Formproduct>
+                <Formemployee title='รายละเอียดพนักงาน' mode='edit'></Formemployee>
             </FormProvider>
         </PageLayout>
     )

@@ -6,7 +6,7 @@ import ExitToApp from '@mui/icons-material/ExitToApp';
 import { useRouter } from "next/navigation";
 
 interface NavMenuProps {
-    menuItems: { text: string, path: string, icon: React.ReactNode }[];
+    menuItems: { text: string, href: string, icon: React.ReactNode, pathname?: string }[];
     user: { name: string, avatarUrl: string };
 }
 
@@ -14,9 +14,9 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
     const router = useRouter();
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-    const handleNavigation = (path: string, index: number) => {
+    const handleNavigation = (href: string, index: number) => {
         setSelectedIndex(index);
-        router.push(path);
+        router.push(href);
     };
 
     const handleLogout = () => {
@@ -48,7 +48,7 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
                     <ListItem key={index} disablePadding>
                         <ListItemButton
                             selected={selectedIndex === index}
-                            onClick={() => handleNavigation(item.path, index)}
+                            onClick={() => handleNavigation(item.href, index)}
                             sx={{
                                 '&.Mui-selected': {
                                     backgroundColor: 'rgba(25, 118, 210, 0.5)',
