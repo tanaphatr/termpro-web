@@ -48,7 +48,7 @@ export default function Formproduct({ editMode, mode, ...props }: FormProductPro
                         {...register("productCode")}
                         fullWidth
                         margin="normal"
-                        // disabled={mode === 'view'}
+                        disabled={mode === 'view'}
                         error={!!errors.productCode}
                         helperText={errors.productCode ? errors.productCode.message : ""}
                     />
@@ -59,6 +59,7 @@ export default function Formproduct({ editMode, mode, ...props }: FormProductPro
                         {...register("name")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.name}
                         helperText={errors.name ? errors.name.message : ""}
                     />
@@ -70,6 +71,7 @@ export default function Formproduct({ editMode, mode, ...props }: FormProductPro
                         type="number"
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.price}
                         helperText={errors.price ? errors.price.message : ""}
                     />
@@ -81,6 +83,7 @@ export default function Formproduct({ editMode, mode, ...props }: FormProductPro
                         type="number"
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.profit}
                         helperText={errors.profit ? errors.profit.message : ""}
                     />
@@ -92,6 +95,7 @@ export default function Formproduct({ editMode, mode, ...props }: FormProductPro
                         type="number"
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.quantity}
                         helperText={errors.quantity ? errors.quantity.message : ""}
                     />

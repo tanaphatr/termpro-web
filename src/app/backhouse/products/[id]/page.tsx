@@ -35,7 +35,7 @@ export default function ProductDetail(props: ProductDetailPageProps) {
                 <ButtonAdd label="แก้ไข" onClick={handleEdit} />
             ]}>
             <FormProvider {...methods}>
-                <Formproduct title='รายละเอียดสินค้า'></Formproduct>
+                <Formproduct title='รายละเอียดสินค้า' mode='view'></Formproduct>
             </FormProvider>
         </PageLayout>
     )

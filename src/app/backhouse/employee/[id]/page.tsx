@@ -35,7 +35,7 @@ export default function EmployeeDetail(props: EmployeeDetailPageProps) {
                 <ButtonAdd label="แก้ไข" onClick={handleEdit} />
             ]}>
             <FormProvider {...methods}>
-                <Formemployee title='รายละเอียดพนักงาน'></Formemployee>
+                <Formemployee title='รายละเอียดพนักงาน' mode='view'></Formemployee>
             </FormProvider>
         </PageLayout>
     )

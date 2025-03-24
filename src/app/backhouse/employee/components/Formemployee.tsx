@@ -62,6 +62,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("nickname")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.nickname}
                         helperText={errors.nickname ? errors.nickname.message : ""}
                     />
@@ -72,6 +73,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("firstname")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.firstname}
                         helperText={errors.firstname ? errors.firstname.message : ""}
                     />
@@ -82,6 +84,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("lastname")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.lastname}
                         helperText={errors.lastname ? errors.lastname.message : ""}
                     />
@@ -93,6 +96,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         type="number"
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.age}
                         helperText={errors.age ? errors.age.message : ""}
                     />
@@ -104,6 +108,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         type="email"
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.email}
                         helperText={errors.email ? errors.email.message : ""}
                     />
@@ -115,6 +120,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         type="password"
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.password}
                         helperText={errors.password ? errors.password.message : ""}
                     />
@@ -125,6 +131,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("phone")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.phone}
                         helperText={errors.phone ? errors.phone.message : ""}
                     />
@@ -135,6 +142,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("address")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.address}
                         helperText={errors.address ? errors.address.message : ""}
                     />
@@ -145,6 +153,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("province")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.province}
                         helperText={errors.province ? errors.province.message : ""}
                     />
@@ -155,6 +164,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("district")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.district}
                         helperText={errors.district ? errors.district.message : ""}
                     />
@@ -165,6 +175,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("position")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.position}
                         helperText={errors.position ? errors.position.message : ""}
                     />
@@ -176,6 +187,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         type="number"
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.salary}
                         helperText={errors.salary ? errors.salary.message : ""}
                     />
@@ -186,6 +198,7 @@ export default function Formemployee({ editMode, mode, ...props }: FormEmployeeP
                         {...register("role")}
                         fullWidth
                         margin="normal"
+                        disabled={mode === 'view'}
                         error={!!errors.role}
                         helperText={errors.role ? errors.role.message : ""}
                     />
