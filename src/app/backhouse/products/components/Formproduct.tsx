@@ -5,21 +5,23 @@ import React from 'react';
 import { useFormContext } from 'react-hook-form';
 
 export type FormProductValues = {
-    id: string;
-    productCode: string;
+    product_id: string;
+    product_code: string;
     name: string;
-    price: string;
-    profit: string;
-    quantity: string;
+    unit_price: number;
+    stock_quantity: number;
+    category: string;
+    min_stock_level: number;
 };
 
 export const defaultProductValues: FormProductValues = {
-    id: "",
-    productCode: "",
-    name: "",
-    price: "",
-    profit: "",
-    quantity: "",
+    product_id: '',
+    product_code: '',
+    name: '',
+    unit_price: 0,
+    stock_quantity: 0,
+    category: '',
+    min_stock_level: 0
 };
 
 type FormProductProps = {
@@ -45,12 +47,15 @@ export default function Formproduct({ editMode, mode, ...props }: FormProductPro
                 <Grid item xs={4} >
                     <TextField
                         label="Product Code"
-                        {...register("productCode")}
+                        {...register("product_code")}
                         fullWidth
                         margin="normal"
                         disabled={mode === 'view'}
-                        error={!!errors.productCode}
-                        helperText={errors.productCode ? errors.productCode.message : ""}
+                        error={!!errors.product_code}
+                        helperText={errors.product_code ? errors.product_code.message : ""}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                     />
                 </Grid>
                 <Grid item xs={4} >
@@ -62,42 +67,59 @@ export default function Formproduct({ editMode, mode, ...props }: FormProductPro
                         disabled={mode === 'view'}
                         error={!!errors.name}
                         helperText={errors.name ? errors.name.message : ""}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </Grid>
+                <Grid item xs={4} >
+                    <TextField
+                        label="Category"
+                        {...register("category")}
+                        fullWidth
+                        margin="normal"
+                        disabled={mode === 'view'}
+                        error={!!errors.category}
+                        helperText={errors.category ? errors.category.message : ""}
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                     />
                 </Grid>
                 <Grid item xs={4} >
                     <TextField
                         label="Price"
-                        {...register("price")}
+                        {...register("unit_price")}
                         type="number"
                         fullWidth
                         margin="normal"
                         disabled={mode === 'view'}
-                        error={!!errors.price}
-                        helperText={errors.price ? errors.price.message : ""}
-                    />
-                </Grid>
-                <Grid item xs={4} >
-                    <TextField
-                        label="Profit"
-                        {...register("profit")}
-                        type="number"
-                        fullWidth
-                        margin="normal"
-                        disabled={mode === 'view'}
-                        error={!!errors.profit}
-                        helperText={errors.profit ? errors.profit.message : ""}
+                        error={!!errors.unit_price}
+                        helperText={errors.unit_price ? errors.unit_price.message : ""}
                     />
                 </Grid>
                 <Grid item xs={4} >
                     <TextField
                         label="Quantity"
-                        {...register("quantity")}
+                        {...register("stock_quantity")}
                         type="number"
                         fullWidth
                         margin="normal"
                         disabled={mode === 'view'}
-                        error={!!errors.quantity}
-                        helperText={errors.quantity ? errors.quantity.message : ""}
+                        error={!!errors.stock_quantity}
+                        helperText={errors.stock_quantity ? errors.stock_quantity.message : ""}
+                    />
+                </Grid>
+                <Grid item xs={4} >
+                    <TextField
+                        label="Min Stock Level"
+                        {...register("min_stock_level")}
+                        type="number"
+                        fullWidth
+                        margin="normal"
+                        disabled={mode === 'view'}
+                        error={!!errors.stock_quantity}
+                        helperText={errors.stock_quantity ? errors.stock_quantity.message : ""}
                     />
                 </Grid>
             </Grid>

@@ -15,20 +15,29 @@ import React, { Fragment, useState, useEffect } from "react";
 import { useFormContext, useFieldArray } from "react-hook-form";
 import DeleteIcon from '@mui/icons-material/Delete';
 import ButtonAdd from "@/components/ButtonAdd";
+import axios from "axios";
 
 export type FormReportValues = {
     id: string;
     total: string;
     date: Date | null;
-    products: { product_code: string; quantity: string; price: string }[];
+    products: { product_code: string; sale_quantity: string; price: string }[];
 };
 
 export const defaultReportValues: FormReportValues = {
     id: "",
     total: "",
-    date: null,
+    date: new Date(),
     products: [],
 };
+
+interface Product {
+    [x: string]: string;
+    product_id: string;
+    product_code: string;
+    name: string;
+    unit_price: string;
+}
 
 type FormReportProps = {
     onEdit?: () => void;
@@ -41,11 +50,7 @@ type FormReportProps = {
     loadingValue?: boolean;
 };
 
-export default function FormReport({
-    editMode,
-    mode,
-    ...props
-}: FormReportProps) {
+export default function FormReport({ editMode, mode, ...props }: FormReportProps) {
     const {
         register,
         control,
@@ -54,17 +59,40 @@ export default function FormReport({
         watch,
     } = useFormContext<FormReportValues>();
 
+    const [product, setProducts] = useState<Product[]>([]);
+
     const { fields, append, remove } = useFieldArray({
         control,
         name: "products",
     });
 
+    useEffect(() => {
+        const fetchProducts = async () => {
+            axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
+            try {
+                const response = await axios.get('/Products');
+                setProducts(response.data);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            }
+        };
+        fetchProducts();
+    }, []);
+
     const products = watch("products");
 
     useEffect(() => {
-        const total = products.reduce((acc, product) => acc + (parseFloat(product.price) || 0), 0);
+        let total = 0;
+        products.forEach((item, index) => {
+            const productDetails = product.find(p => p.product_code === item.product_code);
+            if (productDetails) {
+                const price = parseFloat(productDetails.unit_price) * parseInt(item.sale_quantity || "0");
+                setValue(`products.${index}.price`, price.toFixed(2));
+                total += price;
+            }
+        });
         setValue("total", total.toFixed(2));
-    }, [products, setValue]);
+    }, [products, setValue, product]);
 
     return (
         <Fragment>
@@ -125,20 +153,22 @@ export default function FormReport({
                                     }
                                 >
                                     <MenuItem value="">กรุณาเลือก</MenuItem>
-                                    <MenuItem value="code1">Code 1</MenuItem>
-                                    <MenuItem value="code2">Code 2</MenuItem>
-                                    <MenuItem value="code3">Code 3</MenuItem>
+                                    {product.map((product) => (
+                                        <MenuItem key={product.product_id} value={product.product_code}>
+                                            {product.name}
+                                        </MenuItem>
+                                    ))}
                                 </TextField>
                             </Grid>
                             <Grid item xs={3}>
                                 <TextField
-                                    label="Quantity"
-                                    {...register(`products.${index}.quantity`, { required: "Quantity is required" })}
+                                    label="Sale_quantity"
+                                    {...register(`products.${index}.sale_quantity`, { required: "Quantity is required" })}
                                     type="number"
                                     fullWidth
                                     margin="normal"
-                                    error={!!errors.products?.[index]?.quantity}
-                                    helperText={errors.products?.[index]?.quantity ? errors.products[index].quantity.message : ""}
+                                    error={!!errors.products?.[index]?.sale_quantity}
+                                    helperText={errors.products?.[index]?.sale_quantity ? errors.products[index].sale_quantity.message : ""}
                                 />
                             </Grid>
                             <Grid item xs={3}>
@@ -151,6 +181,9 @@ export default function FormReport({
                                     margin="normal"
                                     error={!!errors.products?.[index]?.price}
                                     helperText={errors.products?.[index]?.price ? errors.products[index].price.message : ""}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={2}>
@@ -161,7 +194,7 @@ export default function FormReport({
                         </Fragment>
                     ))}
                     <Grid item xs={12}>
-                        <ButtonAdd label="เพิ่มสินค้า" onClick={() => append({ product_code: "", quantity: "", price: "" })} />
+                        <ButtonAdd label="เพิ่มสินค้า" onClick={() => append({ product_code: "", sale_quantity: "", price: "" })} />
                     </Grid>
                 </Grid>
             </Card>

@@ -1,20 +1,42 @@
 'use client';
 
 import PageLayout from '@/components/layouts/PageLayout'
-import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton } from '@mui/material'
+import { Typography, Box, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, TablePagination, Pagination } from '@mui/material'
 import React from 'react'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 import ButtonAdd from '@/components/ButtonAdd';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
-const products = [
-  { id: '1', productCode: 'P001', name: 'Product 1', price: 100, profit: 50, quantity: 10 },
-  { id: '2', productCode: 'P002', name: 'Product 2', price: 200, profit: 50, quantity: 20 },
-  { id: '3', productCode: 'P003', name: 'Product 3', price: 300, profit: 50, quantity: 30 },
-]
+interface Product {
+  product_id: string;
+  product_code: string;
+  name: string;
+  unit_price: number;
+  stock_quantity: number;
+  category: string;
+}
 
 export default function Products() {
   const router = useRouter();
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
+      try {
+        const response = await axios.get('/Products');
+        setProducts(response.data);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      }
+    };
+    fetchProducts();
+  }, []);
 
   const handleClickAdd = () => {
     router.push('products/create');
@@ -31,36 +53,44 @@ export default function Products() {
         <ButtonAdd label="เพิ่มสินค้า" onClick={handleClickAdd} />
       ]}
     >
-      < TableContainer component={Paper} >
+      <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
               <TableCell>รหัสสินค้า</TableCell>
               <TableCell>ชื่อสินค้า</TableCell>
+              <TableCell>หมวดหมู่</TableCell>
               <TableCell>ราคา/ชิ้น</TableCell>
-              <TableCell>กำไร/ชิ้น</TableCell>
               <TableCell>จำนวนสินค้า</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => (
-              <TableRow key={product.id}>
-                <TableCell>{product.productCode}</TableCell>
+            {products.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => (
+              <TableRow key={product.product_id} sx={{ height: '40px' }}>
+                <TableCell>{product.product_code}</TableCell>
                 <TableCell>{product.name}</TableCell>
-                <TableCell>${product.price}</TableCell>
-                <TableCell>${product.profit}</TableCell>
-                <TableCell>{product.quantity}</TableCell>
+                <TableCell>{product.category}</TableCell>
+                <TableCell>฿{product.unit_price}</TableCell>
+                <TableCell>{product.stock_quantity}</TableCell>
                 <TableCell align="right">
-                  <IconButton aria-label="view" onClick={() => handleClickView(product.id)}>
-                    <VisibilityIcon />
+                  <IconButton aria-label="view" onClick={() => handleClickView(product.product_id)} size="medium">
+                    <VisibilityIcon fontSize="small" />
                   </IconButton>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      </TableContainer >
-    </PageLayout >
+      </TableContainer>
+      <Box display="flex" justifyContent="center" mt={2}>
+        <Pagination
+          count={Math.ceil(products.length / rowsPerPage)}
+          page={page + 1}
+          onChange={(event, value) => setPage(value - 1)}
+          color="primary"
+        />
+      </Box>
+    </PageLayout>
   )
 }

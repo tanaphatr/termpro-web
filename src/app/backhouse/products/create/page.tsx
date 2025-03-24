@@ -6,6 +6,7 @@ import React from 'react'
 import { useForm, FormProvider } from 'react-hook-form';
 import Formproduct, { FormProductValues, defaultProductValues } from '../components/Formproduct';
 import ButtonAdd from '@/components/ButtonAdd';
+import axios from 'axios';
 
 export default function CreateProduct() {
     const router = useRouter();
@@ -19,8 +20,15 @@ export default function CreateProduct() {
     }
 
     const handleSubmit = () => {
-        methods.handleSubmit((data) => {
-            console.log(data);
+        methods.handleSubmit(async (data) => {
+            axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
+            try {
+                const response = await axios.post(`/Products`, data);
+                console.log('Product updated:', response.data);
+                router.push(`/backhouse/products`);
+            } catch (error) {
+                console.error('Error updating product:', error);
+            }
         })();
     }
 
@@ -30,7 +38,7 @@ export default function CreateProduct() {
                 <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />
             ]}>
             <FormProvider {...methods}>
-                <Formproduct title='เพิ่มสินค้า'></Formproduct>
+                <Formproduct title='เพิ่มสินค้า' mode='create'></Formproduct>
             </FormProvider>
         </PageLayout>
     )
