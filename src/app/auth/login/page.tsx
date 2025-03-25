@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Fragment, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Container,
   TextField,
@@ -13,13 +13,49 @@ import {
 import { useRouter } from "next/navigation";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import axios from "axios";
+import bcrypt from 'bcryptjs';
+
+interface login {
+  employee_id: string;
+  email: string;
+  password: string;
+}
 
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [login, setLogin] = useState<login[]>([]);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  const handleLogin = () => {
-    router.push(`/backhouse/dashboard`);
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
+      try {
+        const response = await axios.get('/Employees');
+        setLogin(response.data);
+      } catch (error) {
+        console.error('Error fetching Employees:', error);
+      }
+    };
+    fetchEmployees();
+  }, []);
+
+  const handleLogin = async () => {
+    const user = login.find((user) => user.email === email);
+    if (user) {
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (isPasswordValid) {
+        alert("Login successful");
+        localStorage.setItem("loggedInUser", JSON.stringify(user));
+        router.push("/backhouse/dashboard");
+      } else {
+        alert("Invalid password. Please try again.");
+      }
+    } else {
+      alert("User not found. Please check your email.");
+    }
   };
 
   const handleClickShowPassword = () => {
@@ -66,6 +102,8 @@ export default function LoginPage() {
             margin="normal"
             fullWidth
             sx={{ height: "45px", marginBottom: "32px" }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <Typography sx={{ fontSize: "16px", alignSelf: "flex-start" }}>
             รหัสผ่าน
@@ -77,6 +115,8 @@ export default function LoginPage() {
             margin="normal"
             fullWidth
             sx={{ height: "60px", marginBottom: "24px" }}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
