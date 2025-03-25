@@ -20,7 +20,7 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
     };
 
     const handleLogout = () => {
-        router.push(`/auth/login`);
+        router.push(`/auth/logout`);
     };
 
     return (

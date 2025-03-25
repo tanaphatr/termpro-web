@@ -8,6 +8,7 @@ import ProductsIcon from '@mui/icons-material/Category';
 import SaleReportIcon from '@mui/icons-material/Assessment';
 import EmployeeIcon from '@mui/icons-material/People';
 import { useState, useEffect } from "react";
+import { useRouter } from 'next/navigation';
 
 export default function RootLayout({
     children,
@@ -15,26 +16,37 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
 
+
     const [firstname, setfirstname] = useState<string | null>(null);
     const [role, setrole] = useState<string | null>(null);
 
-    const menuItems = [
-        {
-            text: 'แดชบอร์ด',
-            href: '/backhouse/dashboard',
-            icon: <DashboardIcon />
-        },
-        {
-            text: 'สินค้า',
-            href: '/backhouse/products',
-            icon: <ProductsIcon />
-        },
-        {
-            text: 'รายงานยอดขาย',
-            href: '/backhouse/sale-report',
-            icon: <SaleReportIcon />
-        },
-    ];
+    useEffect(() => {
+        const user = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
+        setfirstname(user.first_name);
+        setrole(user.role);
+    }, []);
+
+    const menuItems = [];
+
+    if (role === 'admin' || role === 'employee') {
+        menuItems.push(
+            {
+                text: 'แดชบอร์ด',
+                href: '/backhouse/dashboard',
+                icon: <DashboardIcon />
+            },
+            {
+                text: 'สินค้า',
+                href: '/backhouse/products',
+                icon: <ProductsIcon />
+            },
+            {
+                text: 'รายงานยอดขาย',
+                href: '/backhouse/sale-report',
+                icon: <SaleReportIcon />
+            },
+        );
+    }
 
     if (role === 'admin') {
         menuItems.push({
@@ -43,12 +55,6 @@ export default function RootLayout({
             icon: <EmployeeIcon />
         });
     }
-
-    useEffect(() => {
-        const user = JSON.parse(localStorage.getItem("loggedInUser") || "{}");
-        setfirstname(user.first_name);
-        setrole(user.role);
-    }, []);
 
     return (
         <Box sx={{ display: 'flex', minHeight: '100vh' }}>
