@@ -27,7 +27,7 @@ export default function RootLayout({
     }, []);
 
     const menuItems = [];
-
+    
     if (role === 'admin' || role === 'employee') {
         menuItems.push(
             {
