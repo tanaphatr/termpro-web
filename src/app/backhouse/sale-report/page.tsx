@@ -20,13 +20,6 @@ export default function SaleReport() {
     methods.handleSubmit(async (data) => {
       axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
       try {
-        const saleData = {
-          sale_date: data.date,
-          sales_amount: data.total,
-        };
-        const response = await axios.post(`/Salesdata`, saleData);
-        console.log('Sale data submitted:', response.data);
-
         const productData = data.products.map((product) => ({
           Product_code: product.product_code,
           Date: data.date,
@@ -34,18 +27,22 @@ export default function SaleReport() {
           Total_Sale: product.price,
         }));
         await axios.post(`/Product_sales`, productData);
-        alert('Data submitted successfully');
-        router.push('/backhouse/dashboard');
+        router.push('/backhouse/sale-report');
       } catch (error) {
         console.error('Error submitting data:', error);
       }
     })();
   }
 
+  const handleSummari = () => {
+    router.push('/backhouse/sale-report/summarize')
+  }
+
   return (
     <PageLayout title="รายงานการขาย"
       buttons={[
-        <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />
+        <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />,
+        <ButtonAdd label="สรุปยอด" onClick={handleSummari} />
       ]}>
       <FormProvider {...methods}>
         <FormReport title="รายงานการขาย" />

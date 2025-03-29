@@ -19,14 +19,12 @@ import axios from "axios";
 
 export type FormReportValues = {
     id: string;
-    total: string;
     date: Date | null;
     products: { product_code: string; sale_quantity: string; price: string }[];
 };
 
 export const defaultReportValues: FormReportValues = {
     id: "",
-    total: "",
     date: new Date(),
     products: [],
 };
@@ -82,16 +80,13 @@ export default function FormReport({ editMode, mode, ...props }: FormReportProps
     const products = watch("products");
 
     useEffect(() => {
-        let total = 0;
         products.forEach((item, index) => {
             const productDetails = product.find(p => p.product_code === item.product_code);
             if (productDetails) {
                 const price = parseFloat(productDetails.unit_price) * parseInt(item.sale_quantity || "0");
                 setValue(`products.${index}.price`, price.toFixed(2));
-                total += price;
             }
         });
-        setValue("total", total.toFixed(2));
     }, [products, setValue, product]);
 
     return (
@@ -99,43 +94,6 @@ export default function FormReport({ editMode, mode, ...props }: FormReportProps
             <Card sx={{ padding: 2 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h6">{props.title}</Typography>
-                    </Grid>
-                    <Grid item xs={4}>
-                        <TextField
-                            label="Total"
-                            {...register("total")}
-                            fullWidth
-                            margin="normal"
-                            disabled={true}
-                            error={!!errors.total}
-                            helperText={errors.total ? errors.total.message : ""}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={4}>
-                        <TextField
-                            label="Date"
-                            {...register("date")}
-                            value={new Date().toISOString().split('T')[0]}
-                            type="date"
-                            fullWidth
-                            margin="normal"
-                            disabled={true}
-                            error={!!errors.date}
-                            helperText={errors.date ? errors.date.message : ""}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={4}></Grid>
-                </Grid>
-                <Grid container spacing={2}>
-                    <Grid item xs={12} sx={{ marginTop: 2 }}>
-                        <Divider />
                         <Typography variant="h6" sx={{ marginTop: 2 }}>กรอกยอดขายสินค้า | จำนวน: {fields.length}</Typography>
                     </Grid>
                     {fields.map((item, index) => (
