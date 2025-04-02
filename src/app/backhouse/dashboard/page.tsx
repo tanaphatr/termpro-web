@@ -1,8 +1,8 @@
 'use client';
 
-import PageLayout from '@/components/layouts/PageLayout'
-import React, { useEffect, useState } from 'react'
-import Formdashboard from './components/Formdashboard'
+import PageLayout from '@/components/layouts/PageLayout';
+import React, { useEffect, useState } from 'react';
+import Formdashboard from './components/Formdashboard';
 import axios from 'axios';
 
 interface DashboardData {
@@ -15,14 +15,15 @@ interface DashboardData {
 }
 
 export default function Dashboard() {
-
   const [data, setData] = useState<DashboardData | null>(null);
   const [Predictive, setPredictive] = useState<any>({});
   const [Salesdata, setSalesdata] = useState<any[]>([]);
   const [GrapData, setGrapData] = useState<any[]>([]);
+  const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
 
   useEffect(() => {
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
+
     const fetchPredictives = async () => {
       try {
         const response = await axios.get('/Predictive');
@@ -38,27 +39,34 @@ export default function Dashboard() {
         const salesData = response.data;
         setSalesdata(salesData);
 
-        const latestData = salesData ? salesData.slice(-300) : [];
-        console.log("Fetched Salesdata:", latestData);
+        if (graphType === 'monthly') {
+          const latestData = salesData ? salesData.slice(-300) : [];
+          const graphData = latestData.map((item: { sale_date: string; sales_amount: string; profit_amount: string }) => ({
+            name: new Date(item.sale_date).toLocaleString('default', { month: 'short', year: 'numeric' }),
+            Sales: isNaN(Number(item.sales_amount)) ? 0 : Number(item.sales_amount),
+            profit: isNaN(Number(item.profit_amount)) ? 0 : Number(item.profit_amount),
+          }));
 
-        const graphData = latestData.map((item: { sale_date: string; sales_amount: string; profit_amount: string }) => ({
-          name: new Date(item.sale_date).toLocaleString('default', { month: 'short', year: 'numeric' }),
-          Sales: isNaN(Number(item.sales_amount)) ? 0 : Number(item.sales_amount),
-          profit: isNaN(Number(item.profit_amount)) ? 0 : Number(item.profit_amount)
-        }));
+          const monthlyData = graphData.reduce((acc: { [key: string]: { name: string; Sales: number; profit: number } }, item: { name: string; Sales: number; profit: number }) => {
+            if (!acc[item.name]) {
+              acc[item.name] = { name: item.name, Sales: 0, profit: 0 };
+            }
+            acc[item.name].Sales += item.Sales;
+            acc[item.name].profit += item.profit;
+            return acc;
+          }, {});
 
-        const monthlyData = graphData.reduce((acc: { [key: string]: { name: string; Sales: number; profit: number } }, item: { name: string; Sales: number; profit: number }) => {
-          if (!acc[item.name]) {
-            acc[item.name] = { name: item.name, Sales: 0, profit: 0 };
-          }
-          acc[item.name].Sales += item.Sales;
-          acc[item.name].profit += item.profit;
-          return acc;
-        }, {});
+          setGrapData(Object.values(monthlyData));
+        } else if (graphType === 'daily') {
+          const latestData = salesData ? salesData.slice(-45) : [];
+            const graphData = latestData.map((item: { sale_date: string; sales_amount: string; profit_amount: string }) => ({
+            name: new Date(item.sale_date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' }), // Format as DD/MM
+            Sales: isNaN(Number(item.sales_amount)) ? 0 : Number(item.sales_amount),
+            profit: isNaN(Number(item.profit_amount)) ? 0 : Number(item.profit_amount),
+            }));
 
-        const finalGraphData = Object.values(monthlyData);
-
-        setGrapData(finalGraphData);
+          setGrapData(graphData);
+        }
       } catch (error) {
         console.error('Error fetching sales data:', error);
       }
@@ -66,7 +74,7 @@ export default function Dashboard() {
 
     fetchPredictives();
     fetchSalesdata();
-  }, []);
+  }, [graphType]);
 
   useEffect(() => {
     if (Predictive && Salesdata.length > 0) {
@@ -81,19 +89,17 @@ export default function Dashboard() {
         yesterdaySales,
         yesterdayPrediction: predicSale,
         todaySales: 0,
-        todayDate: predicDate
+        todayDate: predicDate,
       });
     }
-  }, [Predictive, Salesdata]);
+  }, [Predictive, Salesdata, GrapData]);
 
   if (!data) {
     return <div>Loading...</div>;
   }
 
   return (
-    <PageLayout
-      title="แดชบอร์ด"
-    >
+    <PageLayout title="แดชบอร์ด">
       <Formdashboard
         salesData={data.salesData}
         productData={data.productData}
@@ -101,7 +107,8 @@ export default function Dashboard() {
         yesterdayPrediction={data.yesterdayPrediction}
         todaySales={data.todaySales}
         todayDate={data.todayDate}
+        onGraphTypeChange={setGraphType} // Pass the handler
       />
     </PageLayout>
-  )
+  );
 }
