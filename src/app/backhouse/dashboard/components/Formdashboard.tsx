@@ -11,6 +11,8 @@ interface FormdashboardProps {
     yesterdayPrediction: number;
     todaySales: number;
     todayDate: string;
+    weather: string; // เพิ่มข้อมูลสภาพอากาศ
+    temperature: number; // เพิ่มข้อมูลอุณหภูมิ
     onGraphTypeChange: (type: 'daily' | 'monthly') => void;
 }
 
@@ -21,6 +23,8 @@ export default function Formdashboard({
     yesterdayPrediction,
     todaySales,
     todayDate,
+    weather,
+    temperature, // รับค่า Props
     onGraphTypeChange
 }: FormdashboardProps) {
 
@@ -116,16 +120,16 @@ export default function Formdashboard({
                     <CardContent>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>ผลการทำนายของวันนี้</Typography>
                         <Typography variant="h4" sx={{ marginBottom: 2 }}>{todaySales} บาท</Typography>
-                        <Typography variant="body2">วันที่: {todayDate}</Typography>
+                        <Typography variant="body2">Date: {new Date(todayDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}</Typography>
                     </CardContent>
                 </Card>
             </Grid>
             <Grid item xs={4}>
                 <Card sx={{ height: 170 }}>
                     <CardContent>
-                        <Typography variant="h6"></Typography>
-                        <Typography variant="h4"></Typography>
-                        <Typography variant="body2"></Typography>
+                        <Typography variant="h6" sx={{ marginBottom: 2 }}>สภาพอากาศวันนี้</Typography>
+                        <Typography variant="h4" sx={{ marginBottom: 2 }}>{weather}</Typography>
+                        <Typography variant="body2">อุณหภูมิ: {temperature}°C</Typography>
                     </CardContent>
                 </Card>
             </Grid>

@@ -20,14 +20,42 @@ export default function Dashboard() {
   const [Salesdata, setSalesdata] = useState<any[]>([]);
   const [GrapData, setGrapData] = useState<any[]>([]);
   const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
+  const [weather, setWeather] = useState<string>(''); // เก็บข้อมูลสภาพอากาศ
+  const [temperature, setTemperature] = useState<number>(0); // เก็บข้อมูลอุณหภูมิ
 
   useEffect(() => {
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
 
     const fetchPredictives = async () => {
       try {
-        const response = await axios.get('/Predictive');
-        setPredictive(response.data);
+        const response = await axios.get('/History_predic');
+        const rawData = response.data;
+
+        // Find the latest date
+        const latestDate = rawData.reduce((latest: string, item: any) => {
+          return item.date > latest ? item.date : latest;
+        }, '');
+
+        // Filter data for the latest date
+        const latestData = rawData.filter((item: any) => item.date === latestDate);
+
+        // Transform the data into a structured format
+        const transformedData = latestData.reduce((acc: any, item: any) => {
+          const date = item.date;
+          if (!acc[date]) {
+            acc[date] = { daily: 0, products: [] };
+          }
+
+          if (item.type === 'Daily') {
+            acc[date].daily = item.result;
+          } else {
+            acc[date].products.push({ type: item.type.trim(), result: item.result });
+          }
+
+          return acc;
+        }, {});
+
+        setPredictive(transformedData);
       } catch (error) {
         console.error('Error fetching predictive data:', error);
       }
@@ -59,11 +87,11 @@ export default function Dashboard() {
           setGrapData(Object.values(monthlyData));
         } else if (graphType === 'daily') {
           const latestData = salesData ? salesData.slice(-45) : [];
-            const graphData = latestData.map((item: { sale_date: string; sales_amount: string; profit_amount: string }) => ({
+          const graphData = latestData.map((item: { sale_date: string; sales_amount: string; profit_amount: string }) => ({
             name: new Date(item.sale_date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' }), // Format as DD/MM
             Sales: isNaN(Number(item.sales_amount)) ? 0 : Number(item.sales_amount),
             profit: isNaN(Number(item.profit_amount)) ? 0 : Number(item.profit_amount),
-            }));
+          }));
 
           setGrapData(graphData);
         }
@@ -72,6 +100,18 @@ export default function Dashboard() {
       }
     };
 
+    const fetchWeatherData = async () => {
+      try {
+        const response = await axios.get(`https://api.weatherapi.com/v1/forecast.json?key=9f04441fb1254c3a8bf212302242009&q=Bangkok&days=2`);
+        const weatherData = response.data;
+        setWeather(weatherData.current.condition.text); // ดึงข้อมูลสภาพอากาศ
+        setTemperature(weatherData.current.temp_c); // ดึงข้อมูลอุณหภูมิ
+      } catch (error) {
+        console.error('Error fetching weather data:', error);
+      }
+    };
+
+    fetchWeatherData();
     fetchPredictives();
     fetchSalesdata();
   }, [graphType]);
@@ -79,16 +119,43 @@ export default function Dashboard() {
   useEffect(() => {
     if (Predictive && Salesdata.length > 0) {
       const yesterdaySales = Salesdata[Salesdata.length - 1]?.sales_amount || 0;
-      const predicSale = Predictive.dailysale;
-      const predicDate = Predictive.date;
+      const predicSale = Predictive[Object.keys(Predictive)[0]]?.daily || 0; // Extract daily prediction
+      const predicDate = Object.keys(Predictive)[0] || ''; // Extract the first date
+
+      // Transform product data
+      const productData = Predictive[Object.keys(Predictive)[0]]?.products.map((item: any) => ({
+        productcode: item.type,
+        productname: (() => {
+          switch (item.type) {
+            case "A1001":
+              return "Osida shoes";
+            case "A1002":
+              return "Adda shoes";
+            case "A1004":
+              return "Fashion shoes";
+            case "A1034":
+              return "Court Shoes";
+            case "B1002":
+              return "Long socks";
+            case "B1003":
+              return "Short socks";
+            case "D1003":
+              return "Mask pack";
+            default:
+              return "";
+          }
+        })(),
+        quantity: Number(item.result),
+      })) || [];
+
       const salesData = GrapData;
 
       setData({
         salesData,
-        productData: [],
+        productData,
         yesterdaySales,
         yesterdayPrediction: predicSale,
-        todaySales: 0,
+        todaySales: predicSale,
         todayDate: predicDate,
       });
     }
@@ -107,6 +174,8 @@ export default function Dashboard() {
         yesterdayPrediction={data.yesterdayPrediction}
         todaySales={data.todaySales}
         todayDate={data.todayDate}
+        weather={weather} // ส่งข้อมูลสภาพอากาศ
+        temperature={temperature} // ส่งข้อมูลอุณหภูมิ
         onGraphTypeChange={setGraphType} // Pass the handler
       />
     </PageLayout>
