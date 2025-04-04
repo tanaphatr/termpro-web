@@ -33,12 +33,12 @@ export default function EmployeeCreate() {
     }
 
     return (
-        <PageLayout title="เพิ่มสินค้า" onBack={handleOnBack}
+        <PageLayout title="Add Employee" onBack={handleOnBack}
             buttons={[
-                <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />
+            <ButtonAdd label="Confirm" onClick={handleSubmit} />
             ]}>
             <FormProvider {...methods}>
-                <Formemployee title={'เพิ่มพนักงาน'} mode='create'/>
+            <Formemployee title={'Add Employee'} mode='create'/>
             </FormProvider>
         </PageLayout>
     )

@@ -94,7 +94,7 @@ export default function FormReport({ editMode, mode, ...props }: FormReportProps
             <Card sx={{ padding: 2 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>กรอกยอดขายสินค้า | จำนวน: {fields.length}</Typography>
+                        <Typography variant="h6" sx={{ marginTop: 2 }}>Enter Product Sales | Count: {fields.length}</Typography>
                     </Grid>
                     {fields.map((item, index) => (
                         <Fragment key={item.id}>
@@ -110,7 +110,7 @@ export default function FormReport({ editMode, mode, ...props }: FormReportProps
                                         errors.products?.[index]?.product_code ? errors.products[index].product_code.message : ""
                                     }
                                 >
-                                    <MenuItem value="">กรุณาเลือก</MenuItem>
+                                    <MenuItem value="">Select</MenuItem>
                                     {product.map((product) => (
                                         <MenuItem key={product.product_id} value={product.product_code}>
                                             {product.name}
@@ -152,7 +152,7 @@ export default function FormReport({ editMode, mode, ...props }: FormReportProps
                         </Fragment>
                     ))}
                     <Grid item xs={12}>
-                        <ButtonAdd label="เพิ่มสินค้า" onClick={() => append({ product_code: "", sale_quantity: "", price: "" })} />
+                        <ButtonAdd label="Add Product" onClick={() => append({ product_code: "", sale_quantity: "", price: "" })} />
                     </Grid>
                 </Grid>
             </Card>

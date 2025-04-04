@@ -49,12 +49,12 @@ export default function ProductDetail(props: ProductDetailPageProps) {
     }
 
     return (
-        <PageLayout title="รายละเอียดสินค้า" onBack={handleOnBack}
+        <PageLayout title="Products Detail" onBack={handleOnBack}
             buttons={[
-                <ButtonAdd label="แก้ไข" onClick={handleEdit} />
+                <ButtonAdd label="Edit" onClick={handleEdit} />
             ]}>
             <FormProvider {...methods}>
-                <Formproduct title='รายละเอียดสินค้า' mode='view'></Formproduct>
+                <Formproduct title='Products Detail' mode='view'></Formproduct>
             </FormProvider>
         </PageLayout>
     )

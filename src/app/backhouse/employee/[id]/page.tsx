@@ -50,12 +50,12 @@ export default function EmployeeDetail(props: EmployeeDetailPageProps) {
     }
 
     return (
-        <PageLayout title="รายละเอียดพนักงาน" onBack={handleOnBack}
+        <PageLayout title="Employee Details" onBack={handleOnBack}
             buttons={[
-                <ButtonAdd label="แก้ไข" onClick={handleEdit} />
+                <ButtonAdd label="Edit" onClick={handleEdit} />
             ]}>
             <FormProvider {...methods}>
-                <Formemployee title='รายละเอียดพนักงาน' mode='view'></Formemployee>
+                <Formemployee title='Employee Details' mode='view'></Formemployee>
             </FormProvider>
         </PageLayout>
     )

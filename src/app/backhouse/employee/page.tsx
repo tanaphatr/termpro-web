@@ -52,21 +52,21 @@ export default function Employee() {
 
   return (
     <PageLayout
-      title="พนักงาน"
+      title="Employee"  
       buttons={[
-        <ButtonAdd label="เพิ่มพนักงาน" onClick={handleClickAdd} />
+        <ButtonAdd label="Add Employee" onClick={handleClickAdd} />
       ]}
     >
       < TableContainer component={Paper} >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>ชื่อเล่น</TableCell>
-              <TableCell>ชื่อจริง</TableCell>
-              <TableCell>นามสกุล</TableCell>
-              <TableCell>ตำแหน่ง</TableCell>
-              <TableCell>เงินเดือน</TableCell>
-              <TableCell>เบอร์โทร</TableCell>
+                <TableCell>Nickname</TableCell>
+                <TableCell>First Name</TableCell>
+                <TableCell>Last Name</TableCell>
+                <TableCell>Position</TableCell>
+                <TableCell>Salary</TableCell>
+                <TableCell>Phone</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>

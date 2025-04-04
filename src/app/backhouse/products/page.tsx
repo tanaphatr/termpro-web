@@ -48,20 +48,20 @@ export default function Products() {
 
   return (
     <PageLayout
-      title="สินค้า"
+      title="Products"
       buttons={[
-        <ButtonAdd label="เพิ่มสินค้า" onClick={handleClickAdd} />
+        <ButtonAdd label="Add Product" onClick={handleClickAdd} />
       ]}
     >
       <TableContainer component={Paper}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>รหัสสินค้า</TableCell>
-              <TableCell>ชื่อสินค้า</TableCell>
-              <TableCell>หมวดหมู่</TableCell>
-              <TableCell>ราคา/ชิ้น</TableCell>
-              <TableCell>จำนวนสินค้า</TableCell>
+                <TableCell>Product Code</TableCell>
+                <TableCell>Product Name</TableCell>
+                <TableCell>Category</TableCell>
+                <TableCell>Price/Unit</TableCell>
+                <TableCell>Stock Quantity</TableCell> 
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>

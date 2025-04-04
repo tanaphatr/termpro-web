@@ -39,13 +39,13 @@ export default function SaleReport() {
   }
 
   return (
-    <PageLayout title="รายงานการขาย"
+    <PageLayout title="Sale Report"
       buttons={[
-        <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />,
-        <ButtonAdd label="สรุปยอด" onClick={handleSummari} />
+      <ButtonAdd label="Confirm" onClick={handleSubmit} />,
+      <ButtonAdd label="Summarize" onClick={handleSummari} />
       ]}>
       <FormProvider {...methods}>
-        <FormReport title="รายงานการขาย" />
+      <FormReport title="Sale Report" />
       </FormProvider>
     </PageLayout>
   )

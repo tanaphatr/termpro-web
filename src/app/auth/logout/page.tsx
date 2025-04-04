@@ -17,7 +17,7 @@ export default function LogoutPage() {
 
   return (
     <Fragment>
-      <Typography>กำลังออกจากระบบ...</Typography>
+      <Typography>Logut...</Typography>
     </Fragment>
   );
 } 

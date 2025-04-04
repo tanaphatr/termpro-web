@@ -83,7 +83,7 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
                         <ListItemText
                             primary={
                                 <Typography sx={{ fontSize: '14px' }}>
-                                    ออกจากระบบ
+                                    Logout
                                 </Typography>
                             }
                         />

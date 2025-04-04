@@ -67,12 +67,12 @@ export default function SaleReport() {
     }
 
     return (
-        <PageLayout title="รายงานการขาย" onBack={handleOnBack}
+        <PageLayout title="Sales Report" onBack={handleOnBack}
             buttons={[
-                <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />
+            <ButtonAdd label="Confirm" onClick={handleSubmit} />
             ]}>
             <FormProvider {...methods}>
-                <Formsummarize title="รายงานการขาย" products={products} /> {/* Pass products as a prop */}
+            <Formsummarize title="Sales Report" products={products} /> {/* Pass products as a prop */}
             </FormProvider>
         </PageLayout>
     )

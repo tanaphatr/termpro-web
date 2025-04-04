@@ -166,7 +166,7 @@ export default function Dashboard() {
   }
 
   return (
-    <PageLayout title="แดชบอร์ด">
+    <PageLayout title="Dashboard">
       <Formdashboard
         salesData={data.salesData}
         productData={data.productData}
@@ -174,9 +174,10 @@ export default function Dashboard() {
         yesterdayPrediction={data.yesterdayPrediction}
         todaySales={data.todaySales}
         todayDate={data.todayDate}
-        weather={weather} // ส่งข้อมูลสภาพอากาศ
-        temperature={temperature} // ส่งข้อมูลอุณหภูมิ
-        onGraphTypeChange={setGraphType} // Pass the handler
+        weather={weather} 
+        temperature={temperature} 
+        onGraphTypeChange={setGraphType} 
+        GoodsaleproductData={data.productData}
       />
     </PageLayout>
   );

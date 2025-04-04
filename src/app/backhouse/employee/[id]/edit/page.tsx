@@ -69,13 +69,13 @@ export default function EmployeeDetail(props: EmployeeDetailPageProps) {
         })();
     }
     return (
-        <PageLayout title="แก้ไขรายละเอียดพนักงาน" onBack={handleOnBack}
+        <PageLayout title="Edit Employee Details" onBack={handleOnBack}
             buttons={[
-                <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />,
-                <ButtonDelete label="ลบ" onClick={handleDelete} />
+                <ButtonAdd label="Confirm" onClick={handleSubmit} />,
+                <ButtonDelete label="Delete" onClick={handleDelete} />
             ]}>
             <FormProvider {...methods}>
-                <Formemployee title='รายละเอียดพนักงาน' mode='edit'></Formemployee>
+                <Formemployee title='Employee Details' mode='edit'></Formemployee>
             </FormProvider>
         </PageLayout>
     )

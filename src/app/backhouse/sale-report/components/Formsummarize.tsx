@@ -72,10 +72,10 @@ export default function Formsummarize({ editMode, mode, products = [], ...props 
             <Card sx={{ padding: 2 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>ยอดรวมทั้งหมด: {watch("total")}</Typography>
+                        <Typography variant="h6" sx={{ marginTop: 2 }}>Totol: {watch("total")}</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>สรุปยอดขายสินค้า | จำนวน: {products.length}</Typography>
+                        <Typography variant="h6" sx={{ marginTop: 2 }}>Sales Summary | Count: {products.length}</Typography>
                     </Grid>
                     {products.map((product, index) => (
                         <Fragment key={index}>

@@ -33,12 +33,12 @@ export default function CreateProduct() {
     }
 
     return (
-        <PageLayout title="เพิ่มสินค้า" onBack={handleOnBack}
+        <PageLayout title="Products Create" onBack={handleOnBack}
             buttons={[
-                <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />
+                <ButtonAdd label="Confirm" onClick={handleSubmit} />
             ]}>
             <FormProvider {...methods}>
-                <Formproduct title='เพิ่มสินค้า' mode='create'></Formproduct>
+                <Formproduct title='Products Create' mode='create'></Formproduct>
             </FormProvider>
         </PageLayout>
     )

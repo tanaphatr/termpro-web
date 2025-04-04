@@ -69,13 +69,13 @@ export default function ProductDetail(props: ProductDetailPageProps) {
         })();
     }
     return (
-        <PageLayout title="รายละเอียดสินค้า" onBack={handleOnBack}
+        <PageLayout title="Products Detail" onBack={handleOnBack}
             buttons={[
-                <ButtonAdd label="ยืนยัน" onClick={handleSubmit} />,
-                <ButtonDelete label="ลบ" onClick={handleDelete} />
+                <ButtonAdd label="Confirm" onClick={handleSubmit} />,
+                <ButtonDelete label="Delete" onClick={handleDelete} />
             ]}>
             <FormProvider {...methods}>
-                <Formproduct title='รายละเอียดสินค้า' mode='edit'></Formproduct>
+                <Formproduct title='Products Detail' mode='edit'></Formproduct>
             </FormProvider>
         </PageLayout>
     )

@@ -16,7 +16,7 @@ import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import axios from "axios";
 import bcrypt from 'bcryptjs';
 
-interface login {
+interface Login {
   employee_id: string;
   email: string;
   password: string;
@@ -25,7 +25,7 @@ interface login {
 export default function LoginPage() {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [login, setLogin] = useState<login[]>([]);
+  const [login, setLogin] = useState<Login[]>([]);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -91,13 +91,13 @@ export default function LoginPage() {
               marginBottom: "16px",
             }}
           >
-            ลงชื่อเข้าใช้
+            Sign In
           </Typography>
           <Typography sx={{ fontSize: "16px", alignSelf: "flex-start" }}>
-            บัญชีผู้ใช้
+            User Account
           </Typography>
           <TextField
-            label="อีเมล"
+            label="Email"
             variant="outlined"
             margin="normal"
             fullWidth
@@ -106,10 +106,10 @@ export default function LoginPage() {
             onChange={(e) => setEmail(e.target.value)}
           />
           <Typography sx={{ fontSize: "16px", alignSelf: "flex-start" }}>
-            รหัสผ่าน
+            Password
           </Typography>
           <TextField
-            label="รหัสผ่าน"
+            label="Password"
             type={showPassword ? "text" : "password"}
             variant="outlined"
             margin="normal"
@@ -145,7 +145,7 @@ export default function LoginPage() {
               fontWeight: "bold",
             }}
           >
-            เข้าสู่ระบบ
+            Login
           </Button>
         </Grid>
       </Container>

@@ -31,17 +31,17 @@ export default function RootLayout({
     if (role === 'admin' || role === 'employee') {
         menuItems.push(
             {
-                text: 'แดชบอร์ด',
+                text: 'Dashboard',
                 href: '/backhouse/dashboard',
                 icon: <DashboardIcon />
             },
             {
-                text: 'สินค้า',
+                text: 'Products',
                 href: '/backhouse/products',
                 icon: <ProductsIcon />
             },
             {
-                text: 'รายงานยอดขาย',
+                text: 'Sale Report',
                 href: '/backhouse/sale-report',
                 icon: <SaleReportIcon />
             },
@@ -50,7 +50,7 @@ export default function RootLayout({
 
     if (role === 'admin') {
         menuItems.push({
-            text: 'พนักงาน',
+            text: 'Employee',
             href: '/backhouse/employee',
             icon: <EmployeeIcon />
         });
