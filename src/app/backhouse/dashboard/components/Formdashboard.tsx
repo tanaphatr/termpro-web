@@ -7,7 +7,8 @@ import { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, BarChart, LabelList,
 interface FormdashboardProps {
     salesData: { name: string, Sales: number, profit: number }[];
     productData: { productcode: string, productname: string, quantity: number }[];
-    GoodsaleproductData: { productcode: string, productname: string, quantity: number }[];
+    GoodsaleproductData: { productcode: string, productname: string, quantity: number, totalSale: number }[];
+    PieData: { category: string, productCount: number, AvgQuantity: number, AvgTotalSale: number }[];
     yesterdaySales: number;
     yesterdayPrediction: number;
     todaySales: number;
@@ -26,10 +27,11 @@ export default function Formdashboard({
     todaySales,
     todayDate,
     weather,
-    temperature, // Receive Props
+    temperature,
+    PieData,
     onGraphTypeChange
 }: FormdashboardProps) {
-
+    console.log('PieData:', PieData);
     const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
 
     const handleGraphTypeChange = (event: SelectChangeEvent<'daily' | 'monthly'>) => {
@@ -107,31 +109,48 @@ export default function Formdashboard({
         </TableContainer>
     );
 
-    const Sales_good = ({ products }: { products: { productcode: string; productname: string; quantity: number }[] }) => {
+    const Sales_good = ({ products }: { products: { productcode: string; productname: string; quantity: number; totalSale: number }[] }) => {
         const [page, setPage] = useState(0);
+        const [sortBy, setSortBy] = useState<'quantity' | 'totalSale'>('quantity');
         const rowsPerPage = 5;
 
         const paginatedProducts = products.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
         return (
             <>
+                <Box display="flex" justifyContent="space-between" mb={2}>
+                    <Typography variant="h6">Top Selling Products</Typography>
+                    <FormControl variant="outlined" size="small" sx={{ width: 150 }}>
+                        <InputLabel>Sort By</InputLabel>
+                        <Select
+                            value={sortBy}
+                            onChange={(event) => setSortBy(event.target.value as 'quantity' | 'totalSale')}
+                            label="Sort By"
+                        >
+                            <MenuItem value="quantity">Quantity</MenuItem>
+                            <MenuItem value="totalSale">Total Sale</MenuItem>
+                        </Select>
+                    </FormControl>
+                </Box>
                 <TableContainer component={Paper}>
                     <Table>
                         <TableHead>
                             <TableRow>
                                 <TableCell>Product Code</TableCell>
-                                <TableCell>Product Name</TableCell>
                                 <TableCell>Quantity</TableCell>
+                                <TableCell>Total Sale (THB)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {paginatedProducts.map((product, index) => (
-                                <TableRow key={index}>
-                                    <TableCell>{product.productcode}</TableCell>
-                                    <TableCell>{product.productname}</TableCell>
-                                    <TableCell>{product.quantity}</TableCell>
-                                </TableRow>
-                            ))}
+                            {paginatedProducts
+                                .sort((a, b) => sortBy === 'quantity' ? b.quantity - a.quantity : b.totalSale - a.totalSale)
+                                .map((product, index) => (
+                                    <TableRow key={index}>
+                                        <TableCell>{product.productcode}</TableCell>
+                                        <TableCell>{product.quantity}</TableCell>
+                                        <TableCell>{product.totalSale}</TableCell>
+                                    </TableRow>
+                                ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -194,29 +213,30 @@ export default function Formdashboard({
             <Grid item xs={4} >
                 <Card sx={{ height: 450 }}>
                     <CardContent>
-                        <Typography variant="h6">Top Selling Products</Typography>
                         <Sales_good products={GoodsaleproductData}></Sales_good>
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={8} >
+            <Grid item xs={4} >
                 <Card sx={{ height: 450 }}>
                     <CardContent>
-                        <Typography variant="h6">Top Product Categories</Typography>
+                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+                            <Typography variant="h6">Top Product Categories</Typography>
+                        </Box>
                         <ResponsiveContainer width="100%" height={350}>
                             <PieChart>
                                 <Pie
-                                    data={productData}
-                                    dataKey="quantity"
-                                    nameKey="productname"
-                                    cx="70%"
+                                    data={PieData}
+                                    dataKey="productCount"
+                                    nameKey="category"
+                                    cx="50%"
                                     cy="50%"
-                                    outerRadius={150}
+                                    outerRadius={130}
                                     fill="#8884d8"
                                     label
                                 >
-                                    {productData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={['#8e24aa', '#9c27b0', '#ab47bc', '#ba68c8', '#ce93d8'][index % 4]} />
+                                    {PieData.map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={`hsl(${index * 72}, 70%, 80%)`} />
                                     ))}
                                 </Pie>
                                 <Tooltip />

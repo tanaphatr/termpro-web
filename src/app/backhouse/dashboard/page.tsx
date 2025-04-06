@@ -22,6 +22,8 @@ export default function Dashboard() {
   const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
   const [weather, setWeather] = useState<string>(''); // เก็บข้อมูลสภาพอากาศ
   const [temperature, setTemperature] = useState<number>(0); // เก็บข้อมูลอุณหภูมิ
+  const [GoodproductData, setGoodproductData] = useState<any[]>([]);
+  const [pieData, setPieData] = useState<any[]>([]);
 
   useEffect(() => {
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
@@ -111,6 +113,45 @@ export default function Dashboard() {
       }
     };
 
+    const fetchGoodProduct = async () => {
+      try {
+        const response = await axios.get('/GoodsaleproductData/sales');
+        const rawGoodproductData = response.data;
+
+        // Map the data to include Total_Sale
+        const GoodproductData = rawGoodproductData.map((item: any) => ({
+          productcode: item.Product_code,
+          quantity: item.Quantity,
+          totalSale: item.Total_Sale, // Include Total_Sale
+        }));
+
+        setGoodproductData(GoodproductData);
+      } catch (error) {
+        console.error('Error fetching good product data:', error);
+      }
+    };
+
+    const fetchPieData = async () => {
+      try {
+        const response = await axios.get('/GraphPie/category-sales');
+        const rawPieData = response.data;
+
+        // Map the data to include category, product count, average quantity, and average total sale
+        const pieData = rawPieData.map((item: any) => ({
+          category: item.Category,
+          productCount: item.ProductCount,
+          avgQuantity: item.AvgQuantity,
+          avgTotalSale: item.AvgTotalSale,
+        }));
+
+        setPieData(pieData);
+      } catch (error) {
+        console.error('Error fetching good product data:', error);
+      }
+    };
+
+    fetchPieData();
+    fetchGoodProduct();
     fetchWeatherData();
     fetchPredictives();
     fetchSalesdata();
@@ -174,10 +215,11 @@ export default function Dashboard() {
         yesterdayPrediction={data.yesterdayPrediction}
         todaySales={data.todaySales}
         todayDate={data.todayDate}
-        weather={weather} 
-        temperature={temperature} 
-        onGraphTypeChange={setGraphType} 
-        GoodsaleproductData={data.productData}
+        weather={weather}
+        temperature={temperature}
+        onGraphTypeChange={setGraphType}
+        GoodsaleproductData={GoodproductData}
+        PieData={pieData}
       />
     </PageLayout>
   );
