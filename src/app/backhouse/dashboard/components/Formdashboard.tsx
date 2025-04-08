@@ -1,8 +1,11 @@
 'use client';
 
 import React, { Fragment, useState } from 'react';
+
+// Define an array of colors for the pie chart
+const PIE_COLORS = ['#4a148c', '#2e7d32', '#ff6f00', '#d84315', '#0277bd', '#c0ca33', '#558b2f', '#ff8f00', '#bf360c', '#01579b', '#9e9d24', '#33691e'];
 import { Grid, Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Box, Pagination } from '@mui/material';
-import { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, BarChart, LabelList, ResponsiveContainer, Cell, Pie, PieChart } from 'recharts';
+import { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, BarChart, LabelList, ResponsiveContainer, Cell, Pie, PieChart, LegendProps as LegendRendererProps } from 'recharts';
 
 interface FormdashboardProps {
     salesData: { name: string, Sales: number, profit: number }[];
@@ -33,6 +36,31 @@ export default function Formdashboard({
 }: FormdashboardProps) {
     console.log('PieData:', PieData);
     const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
+
+    const barChartLegend: Partial<LegendRendererProps> = {
+        // direction: isLargeScreen ? 'column' : 'row',
+        // position: isLargeScreen
+        //   ? { vertical: 'middle', horizontal: 'right' }
+        //   : { vertical: 'bottom', horizontal: 'middle' },
+        direction: 'row',
+        align: 'center',
+        verticalAlign: 'bottom',
+        // Removed invalid properties
+        // padding: isLargeScreen ? 10 : 0,
+        wrapperStyle: { fontSize: '12px', fontWeight: 'bold' },
+        // Removed invalid property 'itemGap'
+    };
+
+    const donutChartLegend: Partial<LegendRendererProps> = {
+        ...barChartLegend,
+        direction: 'column',
+        align: 'left',
+        verticalAlign: 'middle',
+    };
+
+    const sizePie = {
+        height: 230,
+    };
 
     const handleGraphTypeChange = (event: SelectChangeEvent<'daily' | 'monthly'>) => {
         const selectedType = event.target.value as 'daily' | 'monthly';
@@ -114,7 +142,11 @@ export default function Formdashboard({
         const [sortBy, setSortBy] = useState<'quantity' | 'totalSale'>('quantity');
         const rowsPerPage = 5;
 
-        const paginatedProducts = products.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
+        const sortedProducts = [...products].sort((a, b) =>
+            sortBy === 'quantity' ? b.quantity - a.quantity : b.totalSale - a.totalSale
+        );
+
+        const paginatedProducts = sortedProducts.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
         return (
             <>
@@ -142,21 +174,19 @@ export default function Formdashboard({
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {paginatedProducts
-                                .sort((a, b) => sortBy === 'quantity' ? b.quantity - a.quantity : b.totalSale - a.totalSale)
-                                .map((product, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{product.productcode}</TableCell>
-                                        <TableCell>{product.quantity}</TableCell>
-                                        <TableCell>{product.totalSale}</TableCell>
-                                    </TableRow>
-                                ))}
+                            {paginatedProducts.map((product, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{product.productcode}</TableCell>
+                                    <TableCell>{product.quantity}</TableCell>
+                                    <TableCell>{product.totalSale}</TableCell>
+                                </TableRow>
+                            ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
                 <Box display="flex" justifyContent="center" mt={2}>
                     <Pagination
-                        count={Math.ceil(products.length / rowsPerPage)}
+                        count={Math.ceil(sortedProducts.length / rowsPerPage)}
                         page={page + 1}
                         onChange={(event, value) => setPage(value - 1)}
                         color="primary"
@@ -217,29 +247,41 @@ export default function Formdashboard({
                     </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={4} >
+            <Grid item xs={4}>
                 <Card sx={{ height: 450 }}>
                     <CardContent>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                            <Typography variant="h6">Top Product Categories</Typography>
-                        </Box>
+                        <Typography variant="h6">Cattagorry Sale Data</Typography>
                         <ResponsiveContainer width="100%" height={350}>
                             <PieChart>
                                 <Pie
-                                    data={PieData}
-                                    dataKey="productCount"
-                                    nameKey="category"
+                                    data={PieData.map(item => ({ name: item.category, value: item.productCount }))}
                                     cx="50%"
-                                    cy="50%"
-                                    outerRadius={130}
+                                    innerRadius={0}
+                                    outerRadius={120}
                                     fill="#8884d8"
-                                    label
+                                    dataKey="value"
+                                    stroke="#fff"
+                                    strokeWidth={1}
                                 >
                                     {PieData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={`hsl(${index * 72}, 70%, 80%)`} />
+                                        <Cell
+                                            key={`cell-${index}`}
+                                            fill={PIE_COLORS[index % PIE_COLORS.length]}
+                                            name={`${entry.category} (${((entry.productCount / PieData.reduce((sum, item) => sum + item.productCount, 0)) * 100).toFixed(2)}%)`}
+                                        />
                                     ))}
                                 </Pie>
-                                <Tooltip />
+                                <Tooltip formatter={(value: number) => `${((value / PieData.reduce((sum, item) => sum + item.productCount, 0)) * 100).toFixed(2)}%`} />
+                                <Legend
+                                    layout="vertical"
+                                    align="left"
+                                    verticalAlign="middle"
+                                    wrapperStyle={{
+                                        fontSize: '12px',
+                                        fontWeight: 'bold',
+                                        lineHeight: '2',
+                                    }}
+                                />
                             </PieChart>
                         </ResponsiveContainer>
                     </CardContent>

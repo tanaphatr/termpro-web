@@ -26,6 +26,14 @@ export default function RootLayout({
         setrole(user.role);
     }, []);
 
+    const router = useRouter();
+
+    useEffect(() => {
+        const user = localStorage.getItem("loggedInUser");
+        if (!user) {
+            router.push('/auth/login');
+        }
+    }, []);
     const menuItems = [];
     
     if (role === 'admin' || role === 'employee') {

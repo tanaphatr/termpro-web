@@ -23,7 +23,7 @@ export default function Products() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(7);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -53,7 +53,7 @@ export default function Products() {
         <ButtonAdd label="Add Product" onClick={handleClickAdd} />
       ]}
     >
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{ minHeight: '538px' }}>
         <Table>
           <TableHead>
             <TableRow>
