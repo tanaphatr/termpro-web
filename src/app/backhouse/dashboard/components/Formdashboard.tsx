@@ -170,7 +170,7 @@ export default function Formdashboard({
                             <TableRow>
                                 <TableCell>Product Code</TableCell>
                                 <TableCell>Quantity</TableCell>
-                                <TableCell>Total Sale (THB)</TableCell>
+                                <TableCell>Total Sale Profit(THB)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -210,7 +210,7 @@ export default function Formdashboard({
                 <Card sx={{ height: 170 }}>
                     <CardContent>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>Today's Prediction</Typography>
-                        <Typography variant="h4" sx={{ marginBottom: 2 }}>{todaySales} THB</Typography>
+                        <Typography variant="h4" sx={{ marginBottom: 2 }}>{Number(todaySales).toFixed(2)} THB</Typography>
                         <Typography variant="body2">Date: {new Date(todayDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}</Typography>
                     </CardContent>
                 </Card>
@@ -250,7 +250,7 @@ export default function Formdashboard({
             <Grid item xs={4}>
                 <Card sx={{ height: 450 }}>
                     <CardContent>
-                        <Typography variant="h6">Cattagorry Sale Data</Typography>
+                        <Typography variant="h6">Catagorry Sale Data</Typography>
                         <ResponsiveContainer width="100%" height={350}>
                             <PieChart>
                                 <Pie

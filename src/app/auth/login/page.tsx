@@ -47,7 +47,7 @@ export default function LoginPage() {
     if (user) {
       const isPasswordValid = await bcrypt.compare(password, user.password);
       if (isPasswordValid) {
-        alert("Login successful");
+        // alert("Login successful");
         localStorage.setItem("loggedInUser", JSON.stringify(user));
         router.push("/backhouse/dashboard");
       } else {

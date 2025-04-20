@@ -4,6 +4,7 @@ import PageLayout from '@/components/layouts/PageLayout';
 import React, { useEffect, useState } from 'react';
 import Formdashboard from './components/Formdashboard';
 import axios from 'axios';
+import ButtonAdd from '@/components/ButtonAdd';
 
 interface DashboardData {
   salesData: any;
@@ -30,36 +31,37 @@ export default function Dashboard() {
 
     const fetchPredictives = async () => {
       try {
-        const response = await axios.get('/History_predic');
-        const rawData = response.data;
+      setPredictive({}); // Set to empty object to indicate "Waiting Predictive"
+      const response = await axios.get('/History_predic');
+      const rawData = response.data;
 
-        // Find the latest date
-        const latestDate = rawData.reduce((latest: string, item: any) => {
-          return item.date > latest ? item.date : latest;
-        }, '');
+      // Find the latest date
+      const latestDate = rawData.reduce((latest: string, item: any) => {
+        return item.date > latest ? item.date : latest;
+      }, '');
 
-        // Filter data for the latest date
-        const latestData = rawData.filter((item: any) => item.date === latestDate);
+      // Filter data for the latest date
+      const latestData = rawData.filter((item: any) => item.date === latestDate);
 
-        // Transform the data into a structured format
-        const transformedData = latestData.reduce((acc: any, item: any) => {
-          const date = item.date;
-          if (!acc[date]) {
-            acc[date] = { daily: 0, products: [] };
-          }
+      // Transform the data into a structured format
+      const transformedData = latestData.reduce((acc: any, item: any) => {
+        const date = item.date;
+        if (!acc[date]) {
+        acc[date] = { daily: 0, products: [] };
+        }
 
-          if (item.type === 'Daily') {
-            acc[date].daily = item.result;
-          } else {
-            acc[date].products.push({ type: item.type.trim(), result: item.result });
-          }
+        if (item.type === 'Daily') {
+        acc[date].daily = item.result;
+        } else {
+        acc[date].products.push({ type: item.type.trim(), result: item.result });
+        }
 
-          return acc;
-        }, {});
+        return acc;
+      }, {});
 
-        setPredictive(transformedData);
+      setPredictive(transformedData);
       } catch (error) {
-        console.error('Error fetching predictive data:', error);
+      console.error('Error fetching predictive data:', error);
       }
     };
 
@@ -206,8 +208,24 @@ export default function Dashboard() {
     return <div>Loading...</div>;
   }
 
+  const handleClickAdd = () => {
+    axios.get('https://termpro-machinelerning-production.up.railway.app')
+      .then(response => {
+      console.log('API response:', response.data);
+      alert('API call successful!');
+      })
+      .catch(error => {
+      console.error('Error calling API:', error);
+      alert('API call failed!');
+      });
+  }
+
   return (
-    <PageLayout title="Dashboard">
+    <PageLayout title="Dashboard"
+      buttons={[
+        <ButtonAdd label="New Predictive" onClick={handleClickAdd} />
+      ]}
+    >
       <Formdashboard
         salesData={data.salesData}
         productData={data.productData}
