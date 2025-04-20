@@ -9,6 +9,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
+  Box,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import Visibility from "@mui/icons-material/Visibility";
@@ -63,16 +64,19 @@ export default function LoginPage() {
   };
 
   return (
-    <Grid
-      container
-      justifyContent="flex-end"
-      alignItems="center"
-      sx={{
-        height: "100vh",
-        display: "flex",
-        overflow: "hidden",
-      }}
-    >
+    <Box sx={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      overflow: 'hidden',
+      maxHeight: '100vh'
+    }}>
+      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+        <img src="/images/logo.png" alt="LOM CHA-AM Logo" style={{ maxWidth: '180px', height: 'auto' }} />
+      </Box>
+
       <Container
         maxWidth="sm"
         sx={{
@@ -80,6 +84,8 @@ export default function LoginPage() {
           padding: "20px",
           borderRadius: "8px",
           boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+          maxHeight: 'calc(100vh - 220px)',
+          overflow: 'hidden'
         }}
       >
         <Grid item xs={12}>
@@ -145,10 +151,10 @@ export default function LoginPage() {
               fontWeight: "bold",
             }}
           >
-            Login
+            LOGIN
           </Button>
         </Grid>
       </Container>
-    </Grid>
+    </Box>
   );
 }

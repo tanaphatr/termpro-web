@@ -250,7 +250,7 @@ export default function Formdashboard({
             <Grid item xs={4}>
                 <Card sx={{ height: 450 }}>
                     <CardContent>
-                        <Typography variant="h6">Catagorry Sale Data</Typography>
+                        <Typography variant="h6">Category Sale Data</Typography>
                         <ResponsiveContainer width="100%" height={350}>
                             <PieChart>
                                 <Pie
