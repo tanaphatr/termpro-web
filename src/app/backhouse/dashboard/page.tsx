@@ -1,10 +1,11 @@
 'use client';
 
 import PageLayout from '@/components/layouts/PageLayout';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react'; // Ensure useState is imported
 import Formdashboard from './components/Formdashboard';
 import axios from 'axios';
 import ButtonAdd from '@/components/ButtonAdd';
+import { Box, Button, CircularProgress } from '@mui/material';
 
 interface DashboardData {
   salesData: any;
@@ -31,37 +32,37 @@ export default function Dashboard() {
 
     const fetchPredictives = async () => {
       try {
-      setPredictive({}); // Set to empty object to indicate "Waiting Predictive"
-      const response = await axios.get('/History_predic');
-      const rawData = response.data;
+        setPredictive({}); // Set to empty object to indicate "Waiting Predictive"
+        const response = await axios.get('/History_predic');
+        const rawData = response.data;
 
-      // Find the latest date
-      const latestDate = rawData.reduce((latest: string, item: any) => {
-        return item.date > latest ? item.date : latest;
-      }, '');
+        // Find the latest date
+        const latestDate = rawData.reduce((latest: string, item: any) => {
+          return item.date > latest ? item.date : latest;
+        }, '');
 
-      // Filter data for the latest date
-      const latestData = rawData.filter((item: any) => item.date === latestDate);
+        // Filter data for the latest date
+        const latestData = rawData.filter((item: any) => item.date === latestDate);
 
-      // Transform the data into a structured format
-      const transformedData = latestData.reduce((acc: any, item: any) => {
-        const date = item.date;
-        if (!acc[date]) {
-        acc[date] = { daily: 0, products: [] };
-        }
+        // Transform the data into a structured format
+        const transformedData = latestData.reduce((acc: any, item: any) => {
+          const date = item.date;
+          if (!acc[date]) {
+            acc[date] = { daily: 0, products: [] };
+          }
 
-        if (item.type === 'Daily') {
-        acc[date].daily = item.result;
-        } else {
-        acc[date].products.push({ type: item.type.trim(), result: item.result });
-        }
+          if (item.type === 'Daily') {
+            acc[date].daily = item.result;
+          } else {
+            acc[date].products.push({ type: item.type.trim(), result: item.result });
+          }
 
-        return acc;
-      }, {});
+          return acc;
+        }, {});
 
-      setPredictive(transformedData);
+        setPredictive(transformedData);
       } catch (error) {
-      console.error('Error fetching predictive data:', error);
+        console.error('Error fetching predictive data:', error);
       }
     };
 
@@ -204,26 +205,58 @@ export default function Dashboard() {
     }
   }, [Predictive, Salesdata, GrapData]);
 
+  const [isPredicting, setIsPredicting] = useState(false);
+
   if (!data) {
     return <div>Loading...</div>;
   }
 
   const handleClickAdd = () => {
+    setIsPredicting(true);
+    alert('Predictive process started. Please wait');
+
     axios.get('https://termpro-machinelerning-production.up.railway.app')
       .then(response => {
-      console.log('API response:', response.data);
-      alert('API call successful!');
+        console.log('API response:', response.data);
+        alert('Prediction completed successfully!');
       })
       .catch(error => {
-      console.error('Error calling API:', error);
-      alert('API call failed!');
+        console.error('Error calling API:', error);
+        // alert('Prediction failed!');
+      })
+      .finally(() => {
+        setIsPredicting(false);
+        alert('Prediction completed please Reloading the page');
+        window.location.reload();
       });
-  }
+  };
 
   return (
     <PageLayout title="Dashboard"
       buttons={[
-        <ButtonAdd label="New Predictive" onClick={handleClickAdd} />
+        <Box sx={{ m: 1, position: 'relative' }}>
+          <Button
+            variant="contained"
+            sx={{ backgroundColor: isPredicting ? 'grey' : 'primary.main' }}
+            disabled={isPredicting}
+            onClick={handleClickAdd}
+          >
+            New Predictive
+          </Button>
+          {isPredicting && (
+            <CircularProgress
+              size={24}
+              sx={{
+                color: 'green',
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                marginTop: '-12px',
+                marginLeft: '-12px',
+              }}
+            />
+          )}
+        </Box>
       ]}
     >
       <Formdashboard

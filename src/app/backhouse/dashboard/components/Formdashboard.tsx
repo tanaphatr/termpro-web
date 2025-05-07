@@ -170,7 +170,7 @@ export default function Formdashboard({
                             <TableRow>
                                 <TableCell>Product Code</TableCell>
                                 <TableCell>Quantity</TableCell>
-                                <TableCell>Total Sale Profit(THB)</TableCell>
+                                <TableCell>Total Profit(THB)</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
