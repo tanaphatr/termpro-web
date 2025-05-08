@@ -6,6 +6,11 @@ import { Toolbar } from "@mui/material";
 export const metadata: Metadata = {
   title: "PREDICTTIVE",
   description: "แจ้งและติดตาม PREDICTTIVE",
+  icons: {
+    icon: "/images/logo.png",
+    apple: "/images/logo.png",
+    shortcut: "/images/logo.png"
+  }
 };
 
 export default function RootLayout({
