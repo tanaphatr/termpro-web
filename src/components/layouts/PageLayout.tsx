@@ -16,7 +16,7 @@ const PageLayout = ({ children, title, buttons = [], onBack }: PageLayoutProps) 
     <Grid container sx={{
       flexGrow: 1,
       padding: 2,
-      backgroundColor: '#f5f5f5',
+      backgroundColor: '#DBE2EF',
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',

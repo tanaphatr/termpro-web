@@ -6,6 +6,7 @@ import Formdashboard from './components/Formdashboard';
 import axios from 'axios';
 import ButtonAdd from '@/components/ButtonAdd';
 import { Box, Button, CircularProgress } from '@mui/material';
+import { Dialog, DialogContent, DialogContentText } from '@mui/material';
 
 interface DashboardData {
   salesData: any;
@@ -205,73 +206,119 @@ export default function Dashboard() {
     }
   }, [Predictive, Salesdata, GrapData]);
 
-  const [isPredicting, setIsPredicting] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isLoadOpen, setisLoadOpen] = useState(false);
+
+  useEffect(() => {
+    if (data) {
+      const fetchData = async () => {
+        try {
+          const query = async () => {
+            const response = await axios.get('/Salesdata');
+            console.log('Query result:', response.data);
+            const latestSalesDate = response.data.length > 0
+              ? new Date(response.data[response.data.length - 1]?.sale_date).toISOString().split('T')[0]
+              : '';
+            return latestSalesDate;
+          };
+
+          const latestSalesDate = await query();
+          const todayDate = data.todayDate.split('T')[0];
+
+          if (latestSalesDate === todayDate || Object.keys(Predictive).length === 0) {
+            if (!isDialogOpen) { // Ensure it runs only once per reset
+              if (latestSalesDate === todayDate) {
+                setIsDialogOpen(true);
+                axios.get('https://termpro-machinelerning-production.up.railway.app')
+                  .then(response => {
+                    console.log('API response:', response.data);
+                    alert('Prediction completed successfully!');
+                  })
+                  .catch(error => {
+                    console.error('Error calling API:', error);
+                  })
+                  .finally(() => {
+                    setIsDialogOpen(false);
+                    window.location.reload();
+                  });
+              }
+            }
+          }
+        } catch (error) {
+          console.error('Error executing query:', error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (!data) {
+      setisLoadOpen(true); // Ensure dialog is open when data is null
+    } else {
+      setisLoadOpen(false); // Close dialog when data is available
+    }
+  }, [data]);
 
   if (!data) {
-    return <div>Loading...</div>;
+    return (
+      <Dialog open={isLoadOpen}>
+        <DialogContent>
+          <DialogContentText>
+            <Box
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              minWidth={300}
+              minHeight={350}
+            >
+              <img
+                src="/images/logo.png"
+                alt="Logo"
+                style={{ width: '100px', marginBottom: '30px', marginTop: '30px' }}
+              />
+              Data Loading. Please wait...
+              <CircularProgress size={40} sx={{ marginTop: 5, marginBottom: 4 }} />
+            </Box>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+    );
   }
 
-  const handleClickAdd = () => {
-    setIsPredicting(true);
-    alert('Predictive process started. Please wait');
-
-    axios.get('https://termpro-machinelerning-production.up.railway.app')
-      .then(response => {
-        console.log('API response:', response.data);
-        alert('Prediction completed successfully!');
-      })
-      .catch(error => {
-        console.error('Error calling API:', error);
-        // alert('Prediction failed!');
-      })
-      .finally(() => {
-        setIsPredicting(false);
-        alert('Prediction completed please Reloading the page');
-        window.location.reload();
-      });
-  };
-
   return (
-    <PageLayout title="Dashboard"
-      buttons={[
-        <Box sx={{ m: 1, position: 'relative' }}>
-          <Button
-            variant="contained"
-            sx={{ backgroundColor: isPredicting ? 'grey' : 'primary.main' }}
-            disabled={isPredicting}
-            onClick={handleClickAdd}
-          >
-            New Predictive
-          </Button>
-          {isPredicting && (
-            <CircularProgress
-              size={24}
-              sx={{
-                color: 'green',
-                position: 'absolute',
-                top: '50%',
-                left: '50%',
-                marginTop: '-12px',
-                marginLeft: '-12px',
-              }}
-            />
-          )}
-        </Box>
-      ]}
-    >
-      <Formdashboard
-        salesData={data.salesData}
-        productData={data.productData}
-        yesterdaySales={data.yesterdaySales}
-        yesterdayPrediction={data.yesterdayPrediction}
-        todaySales={data.todaySales}
-        todayDate={data.todayDate}
-        weather={weather}
-        temperature={temperature}
-        onGraphTypeChange={setGraphType}
-        GoodsaleproductData={GoodproductData}
-        PieData={pieData}
-      />
-    </PageLayout>
+    <>
+      <Dialog open={isDialogOpen} >
+        <DialogContent >
+          <DialogContentText>
+            <Box display="flex" flexDirection="column" alignItems="center" minWidth={300} minHeight={350}>
+              <img
+                src="/images/logo.png"
+                alt="Logo"
+                style={{ width: '100px', marginBottom: '30px', marginTop: '30px' }}
+              />
+              Prediction in progress. Please wait...
+              <CircularProgress size={40} sx={{ marginTop: 5, marginBottom: 4 }} />
+            </Box>
+          </DialogContentText>
+        </DialogContent>
+      </Dialog>
+      <PageLayout title="Dashboard">
+        <Formdashboard
+          salesData={data.salesData}
+          productData={data.productData}
+          yesterdaySales={data.yesterdaySales}
+          yesterdayPrediction={data.yesterdayPrediction}
+          todaySales={data.todaySales}
+          todayDate={data.todayDate}
+          weather={weather}
+          temperature={temperature}
+          onGraphTypeChange={setGraphType}
+          GoodsaleproductData={GoodproductData}
+          PieData={pieData}
+        />
+      </PageLayout>
+    </>
   );
 }

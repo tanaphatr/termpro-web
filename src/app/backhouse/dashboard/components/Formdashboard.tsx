@@ -34,7 +34,7 @@ export default function Formdashboard({
     PieData,
     onGraphTypeChange
 }: FormdashboardProps) {
-    console.log('PieData:', PieData);
+    // console.log('PieData:', PieData);
     const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
 
     const barChartLegend: Partial<LegendRendererProps> = {
@@ -93,8 +93,8 @@ export default function Formdashboard({
                         />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="Sales" fill="#8884d8" />
-                        <Bar dataKey="profit" fill="#82ca9d" />
+                        <Bar dataKey="Sales" fill="#112D4E" />
+                        <Bar dataKey="profit" fill="#3F72AF" />
                     </BarChart>
                 ) : (
                     <BarChart data={data}>
@@ -106,8 +106,8 @@ export default function Formdashboard({
                         />
                         <Tooltip />
                         <Legend />
-                        <Bar dataKey="Sales" fill="#8884d8" />
-                        <Bar dataKey="profit" fill="#82ca9d" />
+                        <Bar dataKey="Sales" fill="#112D4E" />
+                        <Bar dataKey="profit" fill="#3F72AF" />
                     </BarChart>
                 )}
             </ResponsiveContainer>
@@ -115,7 +115,7 @@ export default function Formdashboard({
     );
 
     const Predictable = ({ products }: { products: { productcode: string; productname: string; quantity: number }[] }) => (
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
             <Table>
                 <TableHead>
                     <TableRow>
@@ -164,7 +164,7 @@ export default function Formdashboard({
                         </Select>
                     </FormControl>
                 </Box>
-                <TableContainer component={Paper}>
+                <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
                     <Table>
                         <TableHead>
                             <TableRow>
@@ -199,33 +199,34 @@ export default function Formdashboard({
     return (
         <Grid container spacing={2}>
             <Grid item xs={4}>
-                <Card sx={{ height: 170 }}>
+                <Card sx={{ height: 170, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>Yesterday's Sales</Typography>
-                        <Typography variant="h4" sx={{ marginBottom: 2 }}>{yesterdaySales} THB</Typography>
+                        <Typography variant="h5" sx={{ marginBottom: 2 }}><span style={{ color: '#F7374F' }}>{yesterdaySales}</span> THB</Typography>
+                        <Typography variant="body2">Date: {new Date(new Date(todayDate).setDate(new Date(todayDate).getDate() - 1)).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}</Typography>
                     </CardContent>
                 </Card >
             </Grid>
             <Grid item xs={4}>
-                <Card sx={{ height: 170 }}>
+                <Card sx={{ height: 170, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>Today's Prediction</Typography>
-                        <Typography variant="h4" sx={{ marginBottom: 2 }}>{Number(todaySales).toFixed(2)} THB</Typography>
+                        <Typography variant="h5" sx={{ marginBottom: 2 }}><span style={{ color: '#41D4A8' }}>{Number(todaySales).toFixed(2)}</span> THB</Typography>
                         <Typography variant="body2">Date: {new Date(todayDate).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })}</Typography>
                     </CardContent>
                 </Card>
             </Grid>
             <Grid item xs={4}>
-                <Card sx={{ height: 170 }}>
+                <Card sx={{ height: 170, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6" sx={{ marginBottom: 2 }}>Today's Weather</Typography>
-                        <Typography variant="h4" sx={{ marginBottom: 2 }}>{weather}</Typography>
-                        <Typography variant="body2">Temperature: {temperature}°C</Typography>
+                        <Typography variant="h5" sx={{ marginBottom: 2 }}>{weather}</Typography>
+                        <Typography variant="body2">Temperature: <span style={{ color: '#F7374F' }}>{temperature}°C</span></Typography>
                     </CardContent>
                 </Card>
             </Grid>
             <Grid item xs={8}>
-                <Card sx={{ height: 500 }}>
+                <Card sx={{ height: 500, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6">Sales Graph</Typography>
                         <Graph data={salesData}></Graph>
@@ -233,7 +234,7 @@ export default function Formdashboard({
                 </Card>
             </Grid>
             <Grid item xs={4} >
-                <Card sx={{ height: 500 }}>
+                <Card sx={{ height: 500, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6">Product Predictions</Typography>
                         <Predictable products={productData}></Predictable>
@@ -241,14 +242,14 @@ export default function Formdashboard({
                 </Card>
             </Grid>
             <Grid item xs={4} >
-                <Card sx={{ height: 450 }}>
+                <Card sx={{ height: 450, borderRadius: 5 }}>
                     <CardContent>
                         <Sales_good products={GoodsaleproductData}></Sales_good>
                     </CardContent>
                 </Card>
             </Grid>
             <Grid item xs={4}>
-                <Card sx={{ height: 450 }}>
+                <Card sx={{ height: 450, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6">Category Sale Data</Typography>
                         <ResponsiveContainer width="100%" height={350}>
@@ -256,7 +257,7 @@ export default function Formdashboard({
                                 <Pie
                                     data={PieData.map(item => ({ name: item.category, value: item.productCount }))}
                                     cx="50%"
-                                    innerRadius={0}
+                                    innerRadius={90}
                                     outerRadius={120}
                                     fill="#8884d8"
                                     dataKey="value"

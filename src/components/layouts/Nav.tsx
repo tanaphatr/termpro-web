@@ -28,17 +28,18 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
             variant="permanent"
             anchor="left"
             sx={{
-                width: 240,
+                width: 220,
                 flexShrink: 0,
                 '& .MuiDrawer-paper': {
-                    width: 240,
+                    width: 220,
                     boxSizing: 'border-box',
+                    backgroundColor: '#112D4E',
                 },
             }}
         >
             <Toolbar sx={{ display: 'flex', alignItems: 'center' }}>
                 <Avatar alt={user.name} src={user.avatarUrl} />
-                <Typography sx={{ fontSize: '16px', paddingLeft: '20px' }} noWrap>
+                <Typography sx={{ fontSize: '16px', paddingLeft: '20px', color: '#F9F7F7' }} noWrap>
                     {user.name}
                 </Typography>
             </Toolbar>
@@ -61,10 +62,10 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
                                 },
                             }}
                         >
-                            <ListItemIcon >{item.icon}</ListItemIcon>
+                            <ListItemIcon sx={{ color: '#F9F7F7' }}>{item.icon}</ListItemIcon>
                             <ListItemText
                                 primary={
-                                    <Typography sx={{ fontSize: '14px' }}>
+                                    <Typography sx={{ fontSize: '14px', color: '#F9F7F7' }} noWrap>
                                         {item.text}
                                     </Typography>
                                 }
@@ -78,11 +79,11 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
                 <ListItem disablePadding>
                     <ListItemButton onClick={handleLogout}>
                         <ListItemIcon>
-                            <ExitToApp />
+                            <ExitToApp sx={{ color: '#F9F7F7' }} />
                         </ListItemIcon>
                         <ListItemText
                             primary={
-                                <Typography sx={{ fontSize: '14px' }}>
+                                <Typography sx={{ fontSize: '14px', color: '#F9F7F7' }}>
                                     Logout
                                 </Typography>
                             }
