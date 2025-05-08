@@ -215,7 +215,7 @@ export default function Dashboard() {
         try {
           const query = async () => {
             const response = await axios.get('/Salesdata');
-            console.log('Query result:', response.data);
+            // console.log('Query result:', response.data);
             const latestSalesDate = response.data.length > 0
               ? new Date(response.data[response.data.length - 1]?.sale_date).toISOString().split('T')[0]
               : '';
@@ -225,23 +225,21 @@ export default function Dashboard() {
           const latestSalesDate = await query();
           const todayDate = data.todayDate.split('T')[0];
 
-          if (latestSalesDate === todayDate || Object.keys(Predictive).length === 0) {
+          if (latestSalesDate === todayDate) {
             if (!isDialogOpen) { // Ensure it runs only once per reset
-              if (latestSalesDate === todayDate) {
-                setIsDialogOpen(true);
-                axios.get('https://termpro-machinelerning-production.up.railway.app')
-                  .then(response => {
-                    console.log('API response:', response.data);
-                    alert('Prediction completed successfully!');
-                  })
-                  .catch(error => {
-                    console.error('Error calling API:', error);
-                  })
-                  .finally(() => {
-                    setIsDialogOpen(false);
-                    window.location.reload();
-                  });
-              }
+              setIsDialogOpen(true);
+              axios.get('https://termpro-machinelerning-production.up.railway.app')
+                .then(response => {
+                  console.log('API response:', response.data);
+                  alert('Prediction completed successfully!');
+                })
+                .catch(error => {
+                  console.error('Error calling API:', error);
+                })
+                .finally(() => {
+                  setIsDialogOpen(false);
+                  window.location.reload();
+                });
             }
           }
         } catch (error) {
