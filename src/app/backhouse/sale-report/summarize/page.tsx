@@ -14,7 +14,8 @@ export default function SaleReport() {
     const router = useRouter();
 
     const [products, setProducts] = useState([]); // Updated state name
-
+    const [isLoadOpen, setisLoadOpen] = useState(false);
+    const [sale_date, setSaleDate] = useState('');
     const methods = useForm<FormsummarizeValues>({
         defaultValues: defaultReportValues,
     });
@@ -28,18 +29,26 @@ export default function SaleReport() {
         return latestSalesDate;
     };
 
+    React.useEffect(() => {
+        const fetchSaleDate = async () => {
+            const latestDate = await query();
+            const formattedNextDate = new Date(latestDate);
+            formattedNextDate.setDate(formattedNextDate.getDate() + 1);
+            const nextSaleDate = formattedNextDate.toISOString().split('T')[0];
+            setSaleDate(nextSaleDate);
+        };
+        fetchSaleDate();
+    }, []);
 
     useEffect(() => {
         const fetchSalesData = async () => {
             axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
-            const formattedNextDate = new Date(await query());
-            formattedNextDate.setDate(formattedNextDate.getDate() + 1);
-            const today = formattedNextDate.toISOString().split('T')[0];
+
             try {
                 const response = await axios.get(`/Product_sales`);
                 const filteredProducts = response.data?.filter((product: any) => {
                     const productDate = new Date(product.Date).toISOString().split('T')[0];
-                    return product?.Date && productDate === today;
+                    return product?.Date && productDate === sale_date;
                 });
                 if (filteredProducts && filteredProducts.length > 0) {
                     setProducts(filteredProducts); // Set products state
@@ -85,7 +94,6 @@ export default function SaleReport() {
         router.push('/backhouse/sale-report');
     }
 
-    const [isLoadOpen, setisLoadOpen] = useState(false);
 
     return (
         <PageLayout title="Sales Report" onBack={handleOnBack}
@@ -93,7 +101,7 @@ export default function SaleReport() {
                 <ButtonAdd label="Confirm" onClick={handleSubmit} />
             ]}>
             <FormProvider {...methods}>
-                <Formsummarize title="Sales Report" products={products} /> {/* Pass products as a prop */}
+                <Formsummarize title="Sales Report" products={products} date={sale_date} /> {/* Pass products as a prop */}
                 <Dialog open={isLoadOpen}>
                     <DialogContent>
                         <DialogContentText>

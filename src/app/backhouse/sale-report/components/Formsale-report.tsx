@@ -46,6 +46,7 @@ type FormReportProps = {
     editMode?: boolean;
     mode?: "create" | "edit" | "view";
     loadingValue?: boolean;
+    date?: string;
 };
 
 export default function FormReport({ editMode, mode, ...props }: FormReportProps) {
@@ -80,13 +81,17 @@ export default function FormReport({ editMode, mode, ...props }: FormReportProps
     const products = watch("products");
 
     useEffect(() => {
-        products.forEach((item, index) => {
-            const productDetails = product.find(p => p.product_code === item.product_code);
-            if (productDetails) {
-                const price = parseFloat(productDetails.unit_price) * parseInt(item.sale_quantity || "0");
-                setValue(`products.${index}.price`, price.toFixed(2));
-            }
-        });
+        const interval = setInterval(() => {
+            products.forEach((item, index) => {
+                const productDetails = product.find(p => p.product_code === item.product_code);
+                if (productDetails) {
+                    const price = parseFloat(productDetails.unit_price) * parseInt(item.sale_quantity || "0");
+                    setValue(`products.${index}.price`, price.toFixed(2));
+                }
+            });
+        }, 500);
+
+        return () => clearInterval(interval);
     }, [products, setValue, product]);
 
     return (
@@ -94,7 +99,10 @@ export default function FormReport({ editMode, mode, ...props }: FormReportProps
             <Card sx={{ padding: 2 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>Enter Product Sales | Count: {fields.length}</Typography>
+                        <Typography variant="h6" sx={{ marginTop: 2 }}>Date: {props.date}</Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="h6">Enter Product Sales | Count: {fields.length}</Typography>
                     </Grid>
                     {fields.map((item, index) => (
                         <Fragment key={item.id}>

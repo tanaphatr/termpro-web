@@ -55,6 +55,7 @@ type FormsummarizeProps = {
     mode?: "create" | "edit" | "view";
     loadingValue?: boolean;
     products?: ProductSale[];
+    date?: string;
 };
 
 export default function Formsummarize({ editMode, mode, products = [], ...props }: FormsummarizeProps) {
@@ -122,16 +123,13 @@ export default function Formsummarize({ editMode, mode, products = [], ...props 
             <Card sx={{ padding: 2 }}>
                 <Grid container spacing={2}>
                     <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>Count: {products.length}</Typography>
+                        <Typography variant="h6" sx={{ marginTop: 2 }}>Date: {props.date}  ||  Count: {products.length}</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>Totol Sale: {watch("total_sale")}</Typography>
+                        <Typography variant="h6">Totol Sale: {watch("total_sale")}  ||  Totol Profit: {watch("total_profit")}</Typography>
                     </Grid>
                     <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>Totol Profit: {watch("total_profit")}</Typography>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Typography variant="h6" sx={{ marginTop: 2 }}>Sales Summary</Typography>
+                        <Typography variant="h6">Sales Summary</Typography>
                         <Grid container spacing={2}>
                             {productSales.map((productSale: ProductSale, index: number) => (
                                 <Fragment key={index}>

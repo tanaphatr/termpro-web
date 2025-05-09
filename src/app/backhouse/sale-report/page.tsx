@@ -11,7 +11,8 @@ import { useRouter } from 'next/navigation'
 
 export default function SaleReport() {
   const router = useRouter();
-
+  const [isLoadOpen, setisLoadOpen] = useState(false);
+  const [sale_date, setSaleDate] = useState('');
   const methods = useForm<FormReportValues>({
     defaultValues: defaultReportValues,
   });
@@ -25,15 +26,22 @@ export default function SaleReport() {
     return latestSalesDate;
   };
 
+  React.useEffect(() => {
+    const fetchSaleDate = async () => {
+      const latestDate = await query();
+      const formattedNextDate = new Date(latestDate);
+      formattedNextDate.setDate(formattedNextDate.getDate() + 1);
+      const nextSaleDate = formattedNextDate.toISOString().split('T')[0];
+      setSaleDate(nextSaleDate);
+    };
+    fetchSaleDate();
+  }, []);
+
   const handleSubmit = () => {
     methods.handleSubmit(async (data) => {
       setisLoadOpen(true);
       axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
       try {
-        const formattedNextDate = new Date(await query());
-        formattedNextDate.setDate(formattedNextDate.getDate() + 1);
-        const sale_date = formattedNextDate.toISOString().split('T')[0];
-
         const productData = data.products.map((product) => ({
           Product_code: product.product_code,
           Date: sale_date,
@@ -53,7 +61,7 @@ export default function SaleReport() {
     router.push('/backhouse/sale-report/summarize')
   }
 
-  const [isLoadOpen, setisLoadOpen] = useState(false);
+
 
   return (
     <PageLayout title="Sale Report"
@@ -62,7 +70,7 @@ export default function SaleReport() {
         <ButtonAdd label="Summarize" onClick={handleSummari} />
       ]}>
       <FormProvider {...methods}>
-        <FormReport title="Sale Report" />
+        <FormReport title="Sale Report" date={sale_date} />
         <Dialog open={isLoadOpen}>
           <DialogContent>
             <DialogContentText>
