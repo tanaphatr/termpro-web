@@ -70,7 +70,7 @@ export default function SaleReport() {
                     profit_amount: data.total_profit,
                 };
 
-                const response = await axios.post(`/Salesdata`, saleData);
+                await axios.post(`/Salesdata`, saleData);
                 // console.log('Sale data submitted:', response.data);
 
                 // alert('Data submitted successfully');

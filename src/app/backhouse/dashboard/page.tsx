@@ -225,8 +225,8 @@ export default function Dashboard() {
           const latestSalesDate = await query();
           const todayDate = data.todayDate.split('T')[0];
 
-          if (latestSalesDate === todayDate) {
-            if (!isDialogOpen) { // Ensure it runs only once per reset
+          if (latestSalesDate >= todayDate) {
+            if (!isDialogOpen) { // Ensure it runs only once per reset 
               setIsDialogOpen(true);
               axios.get('https://termpro-machinelerning-production.up.railway.app')
                 .then(response => {
