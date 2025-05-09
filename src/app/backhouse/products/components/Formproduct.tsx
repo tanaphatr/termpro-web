@@ -9,6 +9,7 @@ export type FormProductValues = {
     product_code: string;
     name: string;
     unit_price: number;
+    unit_profit: number;
     stock_quantity: number;
     category: string;
     min_stock_level: number;
@@ -21,7 +22,8 @@ export const defaultProductValues: FormProductValues = {
     unit_price: 0,
     stock_quantity: 0,
     category: '',
-    min_stock_level: 0
+    min_stock_level: 0,
+    unit_profit: 0
 };
 
 type FormProductProps = {
@@ -96,6 +98,18 @@ export default function Formproduct({ editMode, mode, ...props }: FormProductPro
                         disabled={mode === 'view'}
                         error={!!errors.unit_price}
                         helperText={errors.unit_price ? errors.unit_price.message : ""}
+                    />
+                </Grid>
+                <Grid item xs={4} >
+                    <TextField
+                        label="Profit"
+                        {...register("unit_profit")}
+                        type="number"
+                        fullWidth
+                        margin="normal"
+                        disabled={mode === 'view'}
+                        error={!!errors.unit_profit}
+                        helperText={errors.unit_profit ? errors.unit_profit.message : ""}
                     />
                 </Grid>
                 <Grid item xs={4} >

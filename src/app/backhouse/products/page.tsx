@@ -14,6 +14,7 @@ interface Product {
   product_code: string;
   name: string;
   unit_price: number;
+  unit_profit: number;
   stock_quantity: number;
   category: string;
 }
@@ -57,11 +58,12 @@ export default function Products() {
         <Table>
           <TableHead>
             <TableRow>
-                <TableCell>Product Code</TableCell>
-                <TableCell>Product Name</TableCell>
-                <TableCell>Category</TableCell>
-                <TableCell>Price/Unit</TableCell>
-                <TableCell>Stock Quantity</TableCell> 
+              <TableCell>Product Code</TableCell>
+              <TableCell>Product Name</TableCell>
+              <TableCell>Category</TableCell>
+              <TableCell>Price/Unit</TableCell>
+              <TableCell>Profit/Unit</TableCell>
+              <TableCell>Stock Quantity</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
@@ -72,6 +74,7 @@ export default function Products() {
                 <TableCell>{product.name}</TableCell>
                 <TableCell>{product.category}</TableCell>
                 <TableCell>฿{product.unit_price}</TableCell>
+                <TableCell>฿{product.unit_profit}</TableCell>
                 <TableCell>{product.stock_quantity}</TableCell>
                 <TableCell align="right">
                   <IconButton aria-label="view" onClick={() => handleClickView(product.product_id)} size="medium">
