@@ -30,15 +30,13 @@ export default function SaleReport() {
       setisLoadOpen(true);
       axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
       try {
-        const latestSalesDate = await query();
-        const nextDate = new Date(latestSalesDate);
-        nextDate.setDate(nextDate.getDate() + 1);
-        const formattedNextDate = nextDate.toISOString().split('T')[0];
-        console.log('Formatted Next Date:', formattedNextDate);
+        const formattedNextDate = new Date(await query());
+        formattedNextDate.setDate(formattedNextDate.getDate() + 1);
+        const sale_date = formattedNextDate.toISOString().split('T')[0];
 
         const productData = data.products.map((product) => ({
           Product_code: product.product_code,
-          Date: formattedNextDate,
+          Date: sale_date,
           Quantity: product.sale_quantity,
           Total_Sale: product.price,
         }));
