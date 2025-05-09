@@ -38,7 +38,7 @@ export default function NavMenu({ menuItems, user }: NavMenuProps) {
             }}
         >
             <Toolbar sx={{ display: 'flex', alignItems: 'center' }}>
-                <Avatar alt={user.name} src={user.avatarUrl} />
+                <Avatar alt={user.name} src="/images/Moodeng.png" />
                 <Typography sx={{ fontSize: '16px', paddingLeft: '20px', color: '#F9F7F7' }} noWrap>
                     {user.name}
                 </Typography>
