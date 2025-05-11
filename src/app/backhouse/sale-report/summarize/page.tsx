@@ -62,7 +62,7 @@ export default function SaleReport() {
             }
         };
         fetchSalesData();
-    }, [methods]);
+    }, [sale_date, methods]);
 
     const handleSubmit = () => {
         methods.handleSubmit(async (data) => {
