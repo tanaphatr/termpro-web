@@ -1,12 +1,13 @@
 'use client';
 
 import PageLayout from '@/components/layouts/PageLayout';
-import React, { useEffect, useState } from 'react'; // Ensure useState is imported
+import React, { Fragment, useEffect, useState } from 'react'; // Ensure useState is imported
 import Formdashboard from './components/Formdashboard';
 import axios from 'axios';
 import ButtonAdd from '@/components/ButtonAdd';
 import { Box, Button, CircularProgress } from '@mui/material';
 import { Dialog, DialogContent, DialogContentText } from '@mui/material';
+import LoadingDialog from '@/components/LoadingDialog';
 
 interface DashboardData {
   salesData: any;
@@ -262,47 +263,15 @@ export default function Dashboard() {
 
   if (!data) {
     return (
-      <Dialog open={isLoadOpen}>
-        <DialogContent>
-          <DialogContentText>
-            <Box
-              display="flex"
-              flexDirection="column"
-              alignItems="center"
-              minWidth={300}
-              minHeight={350}
-            >
-              <img
-                src="/images/logo.png"
-                alt="Logo"
-                style={{ width: '100px', marginBottom: '30px', marginTop: '30px' }}
-              />
-              Data Loading. Please wait...
-              <CircularProgress size={40} sx={{ marginTop: 5, marginBottom: 4 }} />
-            </Box>
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
+      <Fragment>
+        <LoadingDialog open={isLoadOpen} text="Data loading. Please wait..." />
+      </Fragment>
     );
   }
 
   return (
-    <>
-      <Dialog open={isDialogOpen} >
-        <DialogContent >
-          <DialogContentText>
-            <Box display="flex" flexDirection="column" alignItems="center" minWidth={300} minHeight={350}>
-              <img
-                src="/images/logo.png"
-                alt="Logo"
-                style={{ width: '100px', marginBottom: '30px', marginTop: '30px' }}
-              />
-              Prediction in progress. Please wait...
-              <CircularProgress size={40} sx={{ marginTop: 5, marginBottom: 4 }} />
-            </Box>
-          </DialogContentText>
-        </DialogContent>
-      </Dialog>
+    <Fragment>
+      <LoadingDialog open={isDialogOpen} text="Prediction in progress. Please wait..." />
       <PageLayout title="Dashboard">
         <Formdashboard
           salesData={data.salesData}
@@ -318,6 +287,6 @@ export default function Dashboard() {
           PieData={pieData}
         />
       </PageLayout>
-    </>
+    </Fragment>
   );
 }

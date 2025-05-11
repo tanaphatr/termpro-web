@@ -52,7 +52,7 @@ export default function Employee() {
 
   return (
     <PageLayout
-      title="Employee"  
+      title="Employee"
       buttons={[
         <ButtonAdd label="Add Employee" onClick={handleClickAdd} />
       ]}
@@ -61,12 +61,12 @@ export default function Employee() {
         <Table>
           <TableHead>
             <TableRow>
-                <TableCell>Nickname</TableCell>
-                <TableCell>First Name</TableCell>
-                <TableCell>Last Name</TableCell>
-                <TableCell>Position</TableCell>
-                <TableCell>Salary</TableCell>
-                <TableCell>Phone</TableCell>
+              <TableCell>Nickname</TableCell>
+              <TableCell>First Name</TableCell>
+              <TableCell>Last Name</TableCell>
+              <TableCell>Position</TableCell>
+              <TableCell>Salary</TableCell>
+              <TableCell>Phone</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>

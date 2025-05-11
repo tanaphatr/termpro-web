@@ -9,6 +9,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import Formsummarize, { defaultReportValues, FormsummarizeValues } from '../components/Formsummarize'
+import LoadingDialog from '@/components/LoadingDialog'
 
 export default function SaleReport() {
     const router = useRouter();
@@ -102,27 +103,7 @@ export default function SaleReport() {
             ]}>
             <FormProvider {...methods}>
                 <Formsummarize title="Sales Report" products={products} date={sale_date} /> {/* Pass products as a prop */}
-                <Dialog open={isLoadOpen}>
-                    <DialogContent>
-                        <DialogContentText>
-                            <Box
-                                display="flex"
-                                flexDirection="column"
-                                alignItems="center"
-                                minWidth={300}
-                                minHeight={350}
-                            >
-                                <img
-                                    src="/images/logo.png"
-                                    alt="Logo"
-                                    style={{ width: '100px', marginBottom: '30px', marginTop: '30px' }}
-                                />
-                                Data Uploading. Please wait...
-                                <CircularProgress size={40} sx={{ marginTop: 5, marginBottom: 4 }} />
-                            </Box>
-                        </DialogContentText>
-                    </DialogContent>
-                </Dialog>
+                <LoadingDialog open={isLoadOpen} text="Data Uploading. Please wait..." />
             </FormProvider>
         </PageLayout>
     )
