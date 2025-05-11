@@ -73,8 +73,63 @@ export default function LoginPage() {
       overflow: 'hidden',
       maxHeight: '100vh'
     }}>
-      <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
-        <img src="/images/logo.png" alt="LOM CHA-AM Logo" style={{ maxWidth: '180px', height: 'auto' }} />
+      <Box 
+        sx={{ 
+          display: 'flex',justifyContent: 'center', mb: 3, animation: 'logoFloat 3s ease-in-out infinite' 
+        }}
+      >
+        <img 
+          src="/images/logo.png" 
+          alt="LOM CHA-AM Logo" 
+          style={{ 
+            maxWidth: '180px', 
+            height: 'auto',
+            animation: 'logoGlow 2s ease-in-out infinite, logoRotate 8s linear infinite, logoScale 4s ease-in-out infinite'
+          }}
+        />
+        <style jsx global>{`
+          @keyframes logoFloat {
+            0%, 100% {
+              transform: translateY(0);
+            }
+            50% {
+              transform: translateY(-10px);
+            }
+          }
+          
+          @keyframes logoGlow {
+            0%, 100% {
+              filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.6));
+            }
+            50% {
+              filter: drop-shadow(0 0 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 20px rgba(100, 149, 237, 0.6));
+            }
+          }
+
+          @keyframes logoRotate {
+            0% {
+              transform: rotate(0deg);
+            }
+            25% {
+              transform: rotate(2deg);
+            }
+            75% {
+              transform: rotate(-2deg);
+            }
+            100% {
+              transform: rotate(0deg);
+            }
+          }
+
+          @keyframes logoScale {
+            0%, 100% {
+              transform: scale(1);
+            }
+            50% {
+              transform: scale(1.05);
+            }
+          }
+        `}</style>
       </Box>
 
       <Container
