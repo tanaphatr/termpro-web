@@ -10,6 +10,7 @@ import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import Formsummarize, { defaultReportValues, FormsummarizeValues } from '../components/Formsummarize'
 import LoadingDialog from '@/components/LoadingDialog'
+import { enqueueSnackbar } from 'notistack'
 
 export default function SaleReport() {
     const router = useRouter();
@@ -81,6 +82,7 @@ export default function SaleReport() {
                 };
 
                 await axios.post(`/Salesdata`, saleData);
+                enqueueSnackbar('SAVE to Salesdata !', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
                 // console.log('Sale data submitted:', response.data);
 
                 // alert('Data submitted successfully');

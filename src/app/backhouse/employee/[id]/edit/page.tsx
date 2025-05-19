@@ -8,6 +8,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import ButtonAdd from '@/components/ButtonAdd';
 import axios from 'axios';
 import ButtonDelete from '@/components/ButtonDelete';
+import { useSnackbar } from 'notistack';
 
 type EmployeeDetailPageProps = {
     params: {
@@ -18,6 +19,7 @@ type EmployeeDetailPageProps = {
 export default function EmployeeDetail(props: EmployeeDetailPageProps) {
     const { id: ID } = props.params
     const router = useRouter();
+    const { enqueueSnackbar } = useSnackbar();
 
     const methods = useForm<FormEmployeeValues>({
         defaultValues: defaultEmployeeValues,
@@ -51,9 +53,11 @@ export default function EmployeeDetail(props: EmployeeDetailPageProps) {
             try {
                 const response = await axios.put(`/Employees/${ID}`, data);
                 console.log('Employees updated:', response.data);
+                enqueueSnackbar('Edit employee successfully!', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
                 router.push(`/backhouse/employee/${ID}`);
             } catch (error) {
                 console.error('Error updating Employees:', error);
+                enqueueSnackbar('Error updating employee', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });            
             }
         })();
     }
@@ -62,9 +66,11 @@ export default function EmployeeDetail(props: EmployeeDetailPageProps) {
         methods.handleSubmit(async () => {
             try {
                 await axios.delete(`/Employees/${ID}`);
+                enqueueSnackbar('Delete employee successfully!', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
                 router.push(`/backhouse/employee`);
             } catch (error) {
                 console.error('Error updating Employees:', error);
+                enqueueSnackbar('Error Edit Employee ', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
             }
         })();
     }

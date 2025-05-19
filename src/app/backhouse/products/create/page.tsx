@@ -7,9 +7,11 @@ import { useForm, FormProvider } from 'react-hook-form';
 import Formproduct, { FormProductValues, defaultProductValues } from '../components/Formproduct';
 import ButtonAdd from '@/components/ButtonAdd';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 export default function CreateProduct() {
     const router = useRouter();
+    const { enqueueSnackbar } = useSnackbar();
 
     const methods = useForm<FormProductValues>({
         defaultValues: defaultProductValues,
@@ -25,9 +27,11 @@ export default function CreateProduct() {
             try {
                 const response = await axios.post(`/Products`, data);
                 console.log('Product updated:', response.data);
+                enqueueSnackbar('Product created successfully!', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
                 router.push(`/backhouse/products`);
             } catch (error) {
                 console.error('Error updating product:', error);
+                enqueueSnackbar('Error creating product', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
             }
         })();
     }

@@ -8,6 +8,7 @@ import { useForm, FormProvider } from 'react-hook-form';
 import ButtonAdd from '@/components/ButtonAdd';
 import ButtonDelete from '@/components/ButtonDelete';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 type ProductDetailPageProps = {
     params: {
@@ -18,6 +19,7 @@ type ProductDetailPageProps = {
 export default function ProductDetail(props: ProductDetailPageProps) {
     const { id: ID } = props.params
     const router = useRouter();
+    const { enqueueSnackbar } = useSnackbar();
 
     const methods = useForm<FormProductValues>({
         defaultValues: defaultProductValues,
@@ -51,9 +53,11 @@ export default function ProductDetail(props: ProductDetailPageProps) {
             try {
                 const response = await axios.put(`/Products/${ID}`, data);
                 console.log('Product updated:', response.data);
+                enqueueSnackbar('Edit product successfully!', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
                 router.push(`/backhouse/products/${ID}`);
             } catch (error) {
                 console.error('Error updating product:', error);
+                enqueueSnackbar('Error updating product', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
             }
         })();
     }
@@ -62,9 +66,11 @@ export default function ProductDetail(props: ProductDetailPageProps) {
         methods.handleSubmit(async (data) => {
             try {
                 await axios.delete(`/Products/${ID}`);
+                enqueueSnackbar('Delete product successfully!', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
                 router.push(`/backhouse/products`);
             } catch (error) {
                 console.error('Error updating product:', error);
+                enqueueSnackbar('Error Edit Product', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
             }
         })();
     }

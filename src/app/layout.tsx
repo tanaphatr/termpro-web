@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "react-perfect-scrollbar/dist/css/styles.css";
 import "./globals.scss";
 import { Toolbar } from "@mui/material";
+import { Providers } from "../components/providers";
 
 export const metadata: Metadata = {
   title: "PREDICTTIVE",
@@ -21,7 +22,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {children}
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );

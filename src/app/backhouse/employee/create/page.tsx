@@ -7,9 +7,11 @@ import PageLayout from '@/components/layouts/PageLayout';
 import { useRouter } from 'next/navigation';
 import { useForm, FormProvider } from 'react-hook-form';
 import axios from 'axios';
+import { useSnackbar } from 'notistack';
 
 export default function EmployeeCreate() {
     const router = useRouter();
+    const { enqueueSnackbar } = useSnackbar();
 
     const methods = useForm<FormEmployeeValues>({
         defaultValues: defaultEmployeeValues,
@@ -25,9 +27,11 @@ export default function EmployeeCreate() {
             try {
                 const response = await axios.post(`/Employees`, data);
                 console.log('employee updated:', response.data);
+                enqueueSnackbar('employee created successfully!', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
                 router.push(`/backhouse/employee`);
             } catch (error) {
                 console.error('Error updating employee:', error);
+                enqueueSnackbar('Error created employee', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
             }
         })();
     }

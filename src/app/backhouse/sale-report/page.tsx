@@ -9,9 +9,11 @@ import FormReport, { defaultReportValues, FormReportValues } from './components/
 import axios from 'axios'
 import { useRouter } from 'next/navigation'
 import LoadingDialog from '@/components/LoadingDialog'
+import { useSnackbar } from 'notistack';
 
 export default function SaleReport() {
   const router = useRouter();
+  const { enqueueSnackbar } = useSnackbar();
   const [isLoadOpen, setisLoadOpen] = useState(false);
   const [sale_date, setSaleDate] = useState('');
   const methods = useForm<FormReportValues>({
@@ -50,9 +52,11 @@ export default function SaleReport() {
           Total_Sale: product.price,
         }));
         await axios.post(`/Product_sales`, productData);
+        enqueueSnackbar('SAVE Product sales !', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
         window.location.reload();
       } catch (error) {
         console.error('Error submitting data:', error);
+        enqueueSnackbar(' ERRO SAVE !', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
         window.location.reload();
       }
     })();
