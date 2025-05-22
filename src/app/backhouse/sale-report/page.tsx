@@ -52,6 +52,15 @@ export default function SaleReport() {
           Total_Sale: product.price,
         }));
         await axios.post(`/Product_sales`, productData);
+
+        // Update stock quantities after sales are submitted
+        await updateStockQuantities(
+          data.products.map((product) => ({
+            product_code: product.product_code,
+            sale_quantity: Number(product.sale_quantity),
+          }))
+        );
+
         enqueueSnackbar('SAVE Product sales !', { variant: 'success', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
         window.location.reload();
       } catch (error) {
@@ -61,6 +70,29 @@ export default function SaleReport() {
       }
     })();
   }
+
+  // Update stock_quantity after submitting sales
+  const updateStockQuantities = async (products: { product_code: string; sale_quantity: number }[]) => {
+    try {
+      // Fetch all products to get current stock quantities
+      const res = await axios.get('/Products');
+      const allProducts = res.data;
+
+      // Prepare update requests
+      const updateRequests = products.map((product) => {
+        const matchedProduct = allProducts.find((p: any) => p.product_code === product.product_code);
+        if (!matchedProduct) return alert(`Product not found: ${product.product_code}`);
+        const newStockQuantity = (matchedProduct.stock_quantity || 0) - product.sale_quantity;
+        // Use PUT instead of PATCH
+        alert(`Updating product: ${matchedProduct.product_code}, New stock quantity: ${newStockQuantity}`);
+        return axios.put(`/Products/${matchedProduct.id}`, { ...matchedProduct, stock_quantity: newStockQuantity });
+      }).filter(Boolean);
+
+      await Promise.all(updateRequests);
+    } catch (err) {
+      console.error('Error updating stock quantities:', err);
+    }
+  };
 
   const handleSummari = () => {
     router.push('/backhouse/sale-report/summarize')
