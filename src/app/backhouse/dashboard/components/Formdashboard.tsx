@@ -6,6 +6,7 @@ import React, { Fragment, useState } from 'react';
 const PIE_COLORS = ['#4a148c', '#2e7d32', '#ff6f00', '#d84315', '#0277bd', '#c0ca33', '#558b2f', '#ff8f00', '#bf360c', '#01579b', '#9e9d24', '#33691e'];
 import { Grid, Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Box, Pagination, TextField, Button } from '@mui/material';
 import { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, BarChart, LabelList, ResponsiveContainer, Cell, Pie, PieChart, LegendProps as LegendRendererProps } from 'recharts';
+import { enqueueSnackbar } from 'notistack';
 
 interface FormdashboardProps {
     salesData: { name: string, Sales: number, profit: number }[];
@@ -318,7 +319,17 @@ export default function Formdashboard({
                                 type="date"
                                 size="small"
                                 value={pieStartDate}
-                                onChange={e => onPieDateChange(e.target.value, pieEndDate)}
+                                onChange={e => {
+                                    const newStartDate = e.target.value;
+                                    const yesterday = new Date(new Date(todayDate).setDate(new Date(todayDate).getDate() - 1));
+                                    if (new Date(newStartDate) > new Date(pieEndDate)) {
+                                        enqueueSnackbar('Cant select End date before Start date !', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+                                    } else if (new Date(newStartDate) > yesterday) {
+                                        enqueueSnackbar(`เลือกวันที่เกิน ${yesterday.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} ไม่ได้`, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+                                    } else {
+                                        onPieDateChange(newStartDate, pieEndDate);
+                                    }
+                                }}
                                 InputLabelProps={{ shrink: true }}
                                 sx={{ flex: 1 }}
                             />
@@ -328,23 +339,20 @@ export default function Formdashboard({
                                 type="date"
                                 size="small"
                                 value={pieEndDate}
-                                onChange={e => onPieDateChange(pieStartDate, e.target.value)}
+                                onChange={e => {
+                                    const newEndDate = e.target.value;
+                                    const yesterday = new Date(new Date(todayDate).setDate(new Date(todayDate).getDate() - 1));
+                                    if (new Date(newEndDate) < new Date(pieStartDate)) {
+                                        enqueueSnackbar('Cant select End date before Start date !', { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+                                    } else if (new Date(newEndDate) > yesterday) {
+                                        enqueueSnackbar(`เลือกวันที่เกิน ${yesterday.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })} ไม่ได้`, { variant: 'error', anchorOrigin: { vertical: 'bottom', horizontal: 'right' } });
+                                    } else {
+                                        onPieDateChange(pieStartDate, newEndDate);
+                                    }
+                                }}
                                 InputLabelProps={{ shrink: true }}
                                 sx={{ flex: 1 }}
                             />
-                            {/* <Button
-                                onClick={() => onPieDateChange(pieStartDate, pieEndDate)}
-                                style={{
-                                    padding: '8px 16px',
-                                    backgroundColor: '#1976d2',
-                                    color: '#fff',
-                                    border: 'none',
-                                    borderRadius: '4px',
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                Confirm
-                            </Button> */}
                         </Box>
                         <ResponsiveContainer width="100%" height={350}>
                             <PieChart>
