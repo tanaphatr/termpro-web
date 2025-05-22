@@ -166,7 +166,7 @@ export default function Formdashboard({
                             <TableCell>{percentError.type}</TableCell>
                             <TableCell>{percentError.type === 'Daily' ? Number(yesterdaySales).toFixed(2) : percentError.sale.toFixed(2)}</TableCell>
                             <TableCell>{percentError.predic.toFixed(2)}</TableCell>
-                            <TableCell>{Math.abs(percentError.sale - percentError.predic)}</TableCell>
+                            <TableCell>{Math.abs(percentError.sale - percentError.predic).toFixed(2)}</TableCell>
                             <TableCell>
                                 {percentError.type === 'Daily'
                                     ? (Number(yesterdaySales) === 0 || percentError.predic === 0
@@ -192,7 +192,7 @@ export default function Formdashboard({
     const Sales_good = ({ products }: { products: { productcode: string; productname: string; quantity: number; totalSale: number }[] }) => {
         const [page, setPage] = useState(0);
         const [sortBy, setSortBy] = useState<'quantity' | 'totalSale'>('quantity');
-        const rowsPerPage = 5;
+        const rowsPerPage = 7;
 
         const sortedProducts = [...products].sort((a, b) =>
             sortBy === 'quantity' ? b.quantity - a.quantity : b.totalSale - a.totalSale
