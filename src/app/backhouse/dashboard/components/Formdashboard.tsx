@@ -4,7 +4,7 @@ import React, { Fragment, useState } from 'react';
 
 // Define an array of colors for the pie chart
 const PIE_COLORS = ['#4a148c', '#2e7d32', '#ff6f00', '#d84315', '#0277bd', '#c0ca33', '#558b2f', '#ff8f00', '#bf360c', '#01579b', '#9e9d24', '#33691e'];
-import { Grid, Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Box, Pagination } from '@mui/material';
+import { Grid, Card, CardContent, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Box, Pagination, TextField, Button } from '@mui/material';
 import { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, BarChart, LabelList, ResponsiveContainer, Cell, Pie, PieChart, LegendProps as LegendRendererProps } from 'recharts';
 
 interface FormdashboardProps {
@@ -13,6 +13,9 @@ interface FormdashboardProps {
     percentError: { type: string, sale: number, predic: number }[];
     GoodsaleproductData: { productcode: string, productname: string, quantity: number, totalSale: number }[];
     PieData: { category: string, productCount: number}[];
+    pieStartDate: string;
+    pieEndDate: string;
+    onPieDateChange: (start: string, end: string) => void;
     yesterdaySales: number;
     yesterdayPrediction: number;
     todaySales: number;
@@ -20,6 +23,7 @@ interface FormdashboardProps {
     weather: string; // Added weather information
     temperature: number; // Added temperature information
     onGraphTypeChange: (type: 'daily' | 'monthly') => void;
+    ondifferenceTypeChange: (type: 'daily' | 'weekly') => void;
     onPieTypeChange: (type: 'daily' |'weekly'| 'monthly') => void;
 }
 
@@ -35,12 +39,16 @@ export default function Formdashboard({
     weather,
     temperature,
     PieData,
+    pieStartDate,
+    pieEndDate,
+    onPieDateChange,
     onGraphTypeChange,
+    ondifferenceTypeChange,
     onPieTypeChange,
 }: FormdashboardProps) {
     // console.log('PieData:', PieData);
     const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
-    const [pieType, setPieType] = useState<'daily' | 'monthly'>('monthly');
+    const [differenceType, setdifferenceType] = useState<'daily' | 'weekly'>('daily');
 
     const barChartLegend: Partial<LegendRendererProps> = {
         // direction: isLargeScreen ? 'column' : 'row',
@@ -73,10 +81,10 @@ export default function Formdashboard({
         onGraphTypeChange(selectedType);
     };
 
-    const handlePieTypeChange = (event: SelectChangeEvent<'daily' | 'monthly'>) => {
-        const selectedType = event.target.value as 'daily' | 'monthly';
-        setPieType(selectedType);
-        onPieTypeChange(selectedType);
+    const handleDifferenceTypeChange = (event: SelectChangeEvent<'daily' | 'weekly'>) => {
+        const selectedType = event.target.value as 'daily' | 'weekly';
+        setdifferenceType(selectedType);
+        ondifferenceTypeChange(selectedType);
     };
 
     const Graph = ({ data }: { data: { name: string; Sales: number; profit: number }[] }) => (
@@ -164,7 +172,7 @@ export default function Formdashboard({
                     {percentError.map((percentError: { type: string; sale: number; predic: number }, index: number) => (
                         <TableRow key={index}>
                             <TableCell>{percentError.type}</TableCell>
-                            <TableCell>{percentError.type === 'Daily' ? Number(yesterdaySales).toFixed(2) : percentError.sale.toFixed(2)}</TableCell>
+                            <TableCell>{percentError.sale.toFixed(2)}</TableCell>
                             <TableCell>{percentError.predic.toFixed(2)}</TableCell>
                             <TableCell>{Math.abs(percentError.sale - percentError.predic).toFixed(2)}</TableCell>
                             <TableCell>
@@ -304,19 +312,40 @@ export default function Formdashboard({
                 <Card sx={{ height: 600, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6">Category Sale Data</Typography>
-                        <FormControl fullWidth sx={{ marginBottom: 2 }}>
-                            <Select
-                                value={pieType}
-                                onChange={handlePieTypeChange}
-                                variant="outlined"
-                                sx={{ width: 150, height: 40, marginLeft: 'auto' }}
-                                displayEmpty
+                        <Box display="flex" alignItems="center" gap={2} mt={1} mb={5}>
+                            <TextField
+                                label="Start Date"
+                                type="date"
+                                size="small"
+                                value={pieStartDate}
+                                onChange={e => onPieDateChange(e.target.value, pieEndDate)}
+                                InputLabelProps={{ shrink: true }}
+                                sx={{ flex: 1 }}
+                            />
+                            <Typography variant="body1" sx={{ whiteSpace: 'nowrap' }}>to</Typography>
+                            <TextField
+                                label="End Date"
+                                type="date"
+                                size="small"
+                                value={pieEndDate}
+                                onChange={e => onPieDateChange(pieStartDate, e.target.value)}
+                                InputLabelProps={{ shrink: true }}
+                                sx={{ flex: 1 }}
+                            />
+                            {/* <Button
+                                onClick={() => onPieDateChange(pieStartDate, pieEndDate)}
+                                style={{
+                                    padding: '8px 16px',
+                                    backgroundColor: '#1976d2',
+                                    color: '#fff',
+                                    border: 'none',
+                                    borderRadius: '4px',
+                                    cursor: 'pointer',
+                                }}
                             >
-                                <MenuItem value="daily">Daily</MenuItem>
-                                <MenuItem value="weekly">weekly</MenuItem>
-                                <MenuItem value="monthly">Monthly</MenuItem>
-                            </Select>
-                        </FormControl>
+                                Confirm
+                            </Button> */}
+                        </Box>
                         <ResponsiveContainer width="100%" height={350}>
                             <PieChart>
                                 <Pie
@@ -357,6 +386,18 @@ export default function Formdashboard({
                 <Card sx={{ height: 600, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6">Product Difference ({new Date(new Date(todayDate).setDate(new Date(todayDate).getDate() - 1)).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })})</Typography>
+                        {/* <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                            <Select
+                                value={differenceType}
+                                onChange={handleDifferenceTypeChange}
+                                variant="outlined"
+                                sx={{ width: 150, height: 40, marginLeft: 'auto' }}
+                                displayEmpty
+                            >
+                                <MenuItem value="daily">Daily</MenuItem>
+                                <MenuItem value="weekly">weekly</MenuItem>
+                            </Select>
+                        </FormControl> */}
                         <Productsaletable percentError={percentError}></Productsaletable>
                     </CardContent>
                 </Card>
