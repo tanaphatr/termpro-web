@@ -10,8 +10,9 @@ import { CartesianGrid, XAxis, YAxis, Tooltip, Legend, Bar, BarChart, LabelList,
 interface FormdashboardProps {
     salesData: { name: string, Sales: number, profit: number }[];
     productData: { productcode: string, productname: string, quantity: number }[];
+    percentError: { type: string, sale: number, predic: number }[];
     GoodsaleproductData: { productcode: string, productname: string, quantity: number, totalSale: number }[];
-    PieData: { category: string, productCount: number, AvgQuantity: number, AvgTotalSale: number }[];
+    PieData: { category: string, productCount: number}[];
     yesterdaySales: number;
     yesterdayPrediction: number;
     todaySales: number;
@@ -19,12 +20,14 @@ interface FormdashboardProps {
     weather: string; // Added weather information
     temperature: number; // Added temperature information
     onGraphTypeChange: (type: 'daily' | 'monthly') => void;
+    onPieTypeChange: (type: 'daily' |'weekly'| 'monthly') => void;
 }
 
 export default function Formdashboard({
     salesData,
     productData,
     GoodsaleproductData,
+    percentError,
     yesterdaySales,
     yesterdayPrediction,
     todaySales,
@@ -32,10 +35,12 @@ export default function Formdashboard({
     weather,
     temperature,
     PieData,
-    onGraphTypeChange
+    onGraphTypeChange,
+    onPieTypeChange,
 }: FormdashboardProps) {
     // console.log('PieData:', PieData);
     const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
+    const [pieType, setPieType] = useState<'daily' | 'monthly'>('monthly');
 
     const barChartLegend: Partial<LegendRendererProps> = {
         // direction: isLargeScreen ? 'column' : 'row',
@@ -66,6 +71,12 @@ export default function Formdashboard({
         const selectedType = event.target.value as 'daily' | 'monthly';
         setGraphType(selectedType);
         onGraphTypeChange(selectedType);
+    };
+
+    const handlePieTypeChange = (event: SelectChangeEvent<'daily' | 'monthly'>) => {
+        const selectedType = event.target.value as 'daily' | 'monthly';
+        setPieType(selectedType);
+        onPieTypeChange(selectedType);
     };
 
     const Graph = ({ data }: { data: { name: string; Sales: number; profit: number }[] }) => (
@@ -130,6 +141,47 @@ export default function Formdashboard({
                             <TableCell>{product.productcode}</TableCell>
                             <TableCell>{product.productname}</TableCell>
                             <TableCell>{product.quantity}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+    );
+
+    const Productsaletable = ({ percentError }: { percentError: { type: string; sale: number; predic: number }[] }) => (
+        <TableContainer component={Paper} sx={{ boxShadow: 'none' }}>
+            <Table>
+                <TableHead>
+                    <TableRow>
+                        <TableCell>Type</TableCell>
+                        <TableCell>Sales</TableCell>
+                        <TableCell>Predictive</TableCell>
+                        <TableCell>Difference</TableCell>
+                        <TableCell>Difference (%)</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {percentError.map((percentError: { type: string; sale: number; predic: number }, index: number) => (
+                        <TableRow key={index}>
+                            <TableCell>{percentError.type}</TableCell>
+                            <TableCell>{percentError.type === 'Daily' ? Number(yesterdaySales).toFixed(2) : percentError.sale.toFixed(2)}</TableCell>
+                            <TableCell>{percentError.predic.toFixed(2)}</TableCell>
+                            <TableCell>{Math.abs(percentError.sale - percentError.predic)}</TableCell>
+                            <TableCell>
+                                {percentError.type === 'Daily'
+                                    ? (Number(yesterdaySales) === 0 || percentError.predic === 0
+                                        ? 'N/A'
+                                        : (() => {
+                                            const diff = (Math.abs(Number(yesterdaySales) - percentError.predic) / Math.min(Number(yesterdaySales), percentError.predic)) * 100;
+                                            return diff > 100 ? (diff / 10).toFixed(2) + '%' : diff.toFixed(2) + '%';
+                                        })())
+                                    : (percentError.sale === 0 || percentError.predic === 0
+                                        ? 'N/A'
+                                        : (() => {
+                                            const diff = (Math.abs(percentError.sale - percentError.predic) / Math.min(percentError.sale, percentError.predic)) * 100;
+                                            return diff > 100 ? (diff / 10).toFixed(2) + '%' : diff.toFixed(2) + '%';
+                                        })())}
+                            </TableCell>
                         </TableRow>
                     ))}
                 </TableBody>
@@ -242,20 +294,33 @@ export default function Formdashboard({
                 </Card>
             </Grid>
             <Grid item xs={4} >
-                <Card sx={{ height: 450, borderRadius: 5 }}>
+                <Card sx={{ height: 600, borderRadius: 5 }}>
                     <CardContent>
                         <Sales_good products={GoodsaleproductData}></Sales_good>
                     </CardContent>
                 </Card>
             </Grid>
             <Grid item xs={4}>
-                <Card sx={{ height: 450, borderRadius: 5 }}>
+                <Card sx={{ height: 600, borderRadius: 5 }}>
                     <CardContent>
                         <Typography variant="h6">Category Sale Data</Typography>
+                        <FormControl fullWidth sx={{ marginBottom: 2 }}>
+                            <Select
+                                value={pieType}
+                                onChange={handlePieTypeChange}
+                                variant="outlined"
+                                sx={{ width: 150, height: 40, marginLeft: 'auto' }}
+                                displayEmpty
+                            >
+                                <MenuItem value="daily">Daily</MenuItem>
+                                <MenuItem value="weekly">weekly</MenuItem>
+                                <MenuItem value="monthly">Monthly</MenuItem>
+                            </Select>
+                        </FormControl>
                         <ResponsiveContainer width="100%" height={350}>
                             <PieChart>
                                 <Pie
-                                    data={PieData.map(item => ({ name: item.category, value: item.productCount }))}
+                                    data={PieData.sort((a, b) => b.productCount - a.productCount).map(item => ({ name: item.category, value: item.productCount }))}
                                     cx="50%"
                                     innerRadius={90}
                                     outerRadius={120}
@@ -264,11 +329,11 @@ export default function Formdashboard({
                                     stroke="#fff"
                                     strokeWidth={1}
                                 >
-                                    {PieData.map((entry, index) => (
+                                    {PieData.sort((a, b) => b.productCount - a.productCount).map((entry, index) => (
                                         <Cell
                                             key={`cell-${index}`}
                                             fill={PIE_COLORS[index % PIE_COLORS.length]}
-                                            name={`${entry.category} (${((entry.productCount / PieData.reduce((sum, item) => sum + item.productCount, 0)) * 100).toFixed(2)}%)`}
+                                            name={`${entry.category} (${((entry.productCount / PieData.reduce((sum, item) => sum + item.productCount, 0)) * 100).toFixed(2)}% : ${entry.productCount})`}
                                         />
                                     ))}
                                 </Pie>
@@ -285,6 +350,14 @@ export default function Formdashboard({
                                 />
                             </PieChart>
                         </ResponsiveContainer>
+                    </CardContent>
+                </Card>
+            </Grid>
+            <Grid item xs={4} >
+                <Card sx={{ height: 600, borderRadius: 5 }}>
+                    <CardContent>
+                        <Typography variant="h6">Product Difference ({new Date(new Date(todayDate).setDate(new Date(todayDate).getDate() - 1)).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric' })})</Typography>
+                        <Productsaletable percentError={percentError}></Productsaletable>
                     </CardContent>
                 </Card>
             </Grid>

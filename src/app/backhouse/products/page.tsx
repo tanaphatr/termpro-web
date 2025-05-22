@@ -16,6 +16,7 @@ interface Product {
   unit_price: number;
   unit_profit: number;
   stock_quantity: number;
+  min_stock_level: number;
   category: string;
 }
 
@@ -64,11 +65,15 @@ export default function Products() {
               <TableCell>Price/Unit</TableCell>
               <TableCell>Profit/Unit</TableCell>
               <TableCell>Stock Quantity</TableCell>
+              <TableCell align="right">Notification</TableCell>
               <TableCell align="right"></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((product) => (
+            {products
+              .sort((a, b) => (a.stock_quantity <= a.min_stock_level ? -1 : 1) - (b.stock_quantity <= b.min_stock_level ? -1 : 1))
+              .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              .map((product) => (
               <TableRow key={product.product_id} sx={{ height: '40px' }}>
                 <TableCell>{product.product_code}</TableCell>
                 <TableCell>{product.name}</TableCell>
@@ -77,12 +82,19 @@ export default function Products() {
                 <TableCell>฿{product.unit_profit}</TableCell>
                 <TableCell>{product.stock_quantity}</TableCell>
                 <TableCell align="right">
-                  <IconButton aria-label="view" onClick={() => handleClickView(product.product_id)} size="medium">
-                    <VisibilityIcon fontSize="small" />
-                  </IconButton>
+                {product.stock_quantity <= product.min_stock_level ? (
+                  <Typography color="error">Low Stock</Typography>
+                ) : (
+                  <Typography color="success.main">In Stock</Typography>
+                )}
+                </TableCell>
+                <TableCell align="right">
+                <IconButton aria-label="view" onClick={() => handleClickView(product.product_id)} size="medium">
+                  <VisibilityIcon fontSize="small" />
+                </IconButton>
                 </TableCell>
               </TableRow>
-            ))}
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

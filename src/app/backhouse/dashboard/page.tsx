@@ -24,11 +24,13 @@ export default function Dashboard() {
   const [Salesdata, setSalesdata] = useState<any[]>([]);
   const [GrapData, setGrapData] = useState<any[]>([]);
   const [graphType, setGraphType] = useState<'daily' | 'monthly'>('monthly');
+  const [pieType, setPieType] = useState<'daily' | 'weekly' | 'monthly'>('monthly');
   const [weather, setWeather] = useState<string>(''); // เก็บข้อมูลสภาพอากาศ
   const [temperature, setTemperature] = useState<number>(0); // เก็บข้อมูลอุณหภูมิ
   const [GoodproductData, setGoodproductData] = useState<any[]>([]);
   const [pieData, setPieData] = useState<any[]>([]);
-
+  const [difference, setDifference] = useState<any[]>([]);
+  // console.log('difference:', difference);
   useEffect(() => {
     axios.defaults.baseURL = process.env.NEXT_PUBLIC_API;
 
@@ -65,6 +67,65 @@ export default function Dashboard() {
         setPredictive(transformedData);
       } catch (error) {
         console.error('Error fetching predictive data:', error);
+      }
+    };
+
+    const fetchDiferen = async () => {
+      try {
+      const responsePredictive = await axios.get('/History_predic');
+      const rawPredictiveData = responsePredictive.data;
+
+      // Find the latest date
+      const latestDate = rawPredictiveData.reduce((latest: string, item: any) => {
+        return item.date && item.date > latest ? item.date : latest;
+      }, '');
+
+      // Get the date before the latest date
+      const previousDate = new Date(latestDate);
+      previousDate.setDate(previousDate.getDate() - 1);
+      const previousDateString = previousDate.toISOString().split('T')[0];
+
+      // Log เพื่อตรวจสอบ date ทั้งหมด
+      // console.log('all dates in rawPredictiveData:', rawPredictiveData.map((item: any) => item.date));
+
+      // Filter predictive data for the previous date (include 'Daily' type)
+      const previousPredictiveData = rawPredictiveData.filter(
+        (item: any) => item.date && item.date.split('T')[0] === previousDateString
+      );
+      // console.log('previousPredictiveData', previousPredictiveData);
+
+      // Fetch actual sales data
+      const responseSales = await axios.get('/Product_sales');
+      const rawSalesData = responseSales.data;
+
+      // Calculate percent error
+      const percentError = previousPredictiveData.map((predicItem: any) => {
+        if (predicItem.type === 'Daily') {
+          return {
+        type: predicItem.type,
+        sale: Salesdata[Salesdata.length - 1]?.sales_amount || 0,
+        predic: Number(predicItem.result),
+          };
+        } else {
+          const actualSalesForDateAndProduct = rawSalesData
+        .filter(
+          (saleItem: any) =>
+            saleItem.Product_code === predicItem.type &&
+            saleItem.Date === previousDateString
+        )
+        .reduce((total: number, saleItem: any) => total + Number(saleItem.Quantity), 0);
+
+          return {
+        type: predicItem.type,
+        sale: actualSalesForDateAndProduct || 0,
+        predic: Number(predicItem.result),
+          };
+        }
+      });
+
+      setDifference(percentError);
+      } catch (error) {
+      console.error('Error fetching difference data:', error);
       }
     };
 
@@ -136,31 +197,73 @@ export default function Dashboard() {
       }
     };
 
+
     const fetchPieData = async () => {
       try {
-        const response = await axios.get('/GraphPie/category-sales');
-        const rawPieData = response.data;
+      const response = await axios.get('/Product_sales');
+      const rawPieData = response.data;
 
-        // Map the data to include category, product count, average quantity, and average total sale
-        const pieData = rawPieData.map((item: any) => ({
-          category: item.Category,
-          productCount: item.ProductCount,
-          avgQuantity: item.AvgQuantity,
-          avgTotalSale: item.AvgTotalSale,
-        }));
+      // Determine the date range based on pieType
+      const latestDate = rawPieData.reduce((latest: string, item: any) => {
+        return item.Date > latest ? item.Date : latest;
+      }, '');
 
-        setPieData(pieData);
+      let filteredData = [];
+      if (pieType === 'daily') {
+        // Filter data for the latest date
+        filteredData = rawPieData.filter((item: any) => item.Date === latestDate);
+      } else if (pieType === 'monthly') {
+        // Filter data for the latest date and the past 30 days
+        const dateLimit = new Date(latestDate);
+        dateLimit.setDate(dateLimit.getDate() - 30);
+        filteredData = rawPieData.filter((item: any) => new Date(item.Date) >= dateLimit);
+      }else if (pieType === 'weekly') {
+        // Filter data for the latest date and the past 30 days
+        const dateLimit = new Date(latestDate);
+        dateLimit.setDate(dateLimit.getDate() - 7);
+        filteredData = rawPieData.filter((item: any) => new Date(item.Date) >= dateLimit);
+      }
+
+      // Group data by category based on Product_code
+      const categoryData = filteredData.reduce((acc: any, item: any) => {
+        let category = '';
+        if (item.Product_code.startsWith('A')) {
+        category = 'Shoes';
+        } else if (item.Product_code.startsWith('B')) {
+        category = 'Socks';
+        } else if (item.Product_code.startsWith('D')) {
+        category = 'Mask';
+        } else if (item.Product_code.startsWith('E')) {
+        category = 'Hair clip';
+        } else if (item.Product_code.startsWith('F')) {
+        category = 'Bag';
+        }
+
+        if (!acc[category]) {
+        acc[category] = { category, productCount: 0 };
+        }
+
+        acc[category].productCount += Number(item.Quantity);
+
+        return acc;
+      }, {});
+
+      // Convert the grouped data into an array
+      const pieData = Object.values(categoryData);
+
+      setPieData(pieData);
       } catch (error) {
-        console.error('Error fetching good product data:', error);
+      console.error('Error fetching pie data:', error);
       }
     };
 
+    fetchDiferen();
     fetchPieData();
     fetchGoodProduct();
     fetchWeatherData();
     fetchPredictives();
     fetchSalesdata();
-  }, [graphType]);
+  }, [graphType,pieType]);
 
   useEffect(() => {
     if (Predictive && Salesdata.length > 0) {
@@ -269,6 +372,7 @@ export default function Dashboard() {
     );
   }
 
+  
   return (
     <Fragment>
       <LoadingDialog open={isDialogOpen} text="Prediction in progress. Please wait..." />
@@ -285,7 +389,9 @@ export default function Dashboard() {
           onGraphTypeChange={setGraphType}
           GoodsaleproductData={GoodproductData}
           PieData={pieData}
-        />
+          onPieTypeChange={setPieType} 
+          percentError={difference}        
+          />
       </PageLayout>
     </Fragment>
   );

@@ -117,11 +117,32 @@ export default function FormReport({ editMode, mode, ...props }: FormReportProps
                                     helperText={
                                         errors.products?.[index]?.product_code ? errors.products[index].product_code.message : ""
                                     }
+                                    SelectProps={{
+                                        native: false,
+                                        renderValue: (selected) => {
+                                            const selectedProduct = product.find(p => p.product_code === selected);
+                                            return selectedProduct ? selectedProduct.name : "Select";
+                                        },
+                                        MenuProps: {
+                                            PaperProps: {
+                                                style: {
+                                                    maxHeight: 500,
+                                                },
+                                            },
+                                        },
+                                    }}
+                                    InputProps={{
+                                        inputProps: {
+                                            autoComplete: "off",
+                                        },
+                                    }}
                                 >
-                                    <MenuItem value="">Select</MenuItem>
-                                    {product.map((product) => (
-                                        <MenuItem key={product.product_id} value={product.product_code}>
-                                            {product.name}
+                                    <MenuItem value="">
+                                        <em>Select</em>
+                                    </MenuItem>
+                                    {product.map((filteredProduct) => (
+                                        <MenuItem key={filteredProduct.product_id} value={filteredProduct.product_code}>
+                                            {filteredProduct.name}
                                         </MenuItem>
                                     ))}
                                 </TextField>
