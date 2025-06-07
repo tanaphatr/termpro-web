@@ -75,112 +75,112 @@ export default function Dashboard() {
 
     const fetchDiferen = async () => {
       try {
-      const responsePredictive = await axios.get('/History_predic');
-      const rawPredictiveData = responsePredictive.data;
+        const responsePredictive = await axios.get('/History_predic');
+        const rawPredictiveData = responsePredictive.data;
 
-      // Find the latest date
-      const latestDate = rawPredictiveData.reduce((latest: string, item: any) => {
-        return item.date && item.date > latest ? item.date : latest;
-      }, '');
+        // Find the latest date
+        const latestDate = rawPredictiveData.reduce((latest: string, item: any) => {
+          return item.date && item.date > latest ? item.date : latest;
+        }, '');
 
-      // Get the date before the latest date
-      const previousDate = new Date(latestDate);
-      previousDate.setDate(previousDate.getDate() - 1);
-      const previousDateString = previousDate.toISOString().split('T')[0];
+        // Get the date before the latest date
+        const previousDate = new Date(latestDate);
+        previousDate.setDate(previousDate.getDate() - 1);
+        const previousDateString = previousDate.toISOString().split('T')[0];
 
-      // Calculate the start of the week for weekly comparison
-      const startOfWeek = new Date(latestDate);
-      startOfWeek.setDate(startOfWeek.getDate() - 7);
-      const startOfWeekString = startOfWeek.toISOString().split('T')[0];
+        // Calculate the start of the week for weekly comparison
+        const startOfWeek = new Date(latestDate);
+        startOfWeek.setDate(startOfWeek.getDate() - 7);
+        const startOfWeekString = startOfWeek.toISOString().split('T')[0];
 
-      // Fetch actual sales data
-      const responseSales = await axios.get('/Salesdata');
-      const rawSalesData = responseSales.data;
+        // Fetch actual sales data
+        const responseSales = await axios.get('/Salesdata');
+        const rawSalesData = responseSales.data;
 
-      let percentError = [];
+        let percentError = [];
 
-      if (differenceType === 'daily') {
-        // Filter predictive data for the previous date (exclude 'Daily' type)
-        const previousPredictiveData = rawPredictiveData.filter(
-        (item: any) => item.date && item.date.split('T')[0] === previousDateString
-        );
+        if (differenceType === 'daily') {
+          // Filter predictive data for the previous date (exclude 'Daily' type)
+          const previousPredictiveData = rawPredictiveData.filter(
+            (item: any) => item.date && item.date.split('T')[0] === previousDateString
+          );
 
-        percentError = previousPredictiveData.map((predicItem: any) => {
-        if (predicItem.type === 'Daily') {
-          const actualDailySales = rawSalesData
-          .filter(
-            (saleItem: any) =>
-            new Date(saleItem.sale_date).toISOString().split('T')[0] === previousDateString
-          )
-          .reduce((total: number, saleItem: any) => total + Number(saleItem.sales_amount), 0);
+          percentError = previousPredictiveData.map((predicItem: any) => {
+            if (predicItem.type === 'Daily') {
+              const actualDailySales = rawSalesData
+                .filter(
+                  (saleItem: any) =>
+                    new Date(saleItem.sale_date).toISOString().split('T')[0] === previousDateString
+                )
+                .reduce((total: number, saleItem: any) => total + Number(saleItem.sales_amount), 0);
 
-          return {
-          type: predicItem.type,
-          sale: actualDailySales || 0,
-          predic: Number(predicItem.result),
-          };
-        } else {
-          const actualSalesForDateAndProduct = rawSalesData
-          .filter(
-            (saleItem: any) =>
-            saleItem.Product_code === predicItem.type &&
-            new Date(saleItem.sale_date).toISOString().split('T')[0] === previousDateString
-          )
-          .reduce((total: number, saleItem: any) => total + Number(saleItem.Quantity), 0);
+              return {
+                type: predicItem.type,
+                sale: actualDailySales || 0,
+                predic: Number(predicItem.result),
+              };
+            } else {
+              const actualSalesForDateAndProduct = rawSalesData
+                .filter(
+                  (saleItem: any) =>
+                    saleItem.Product_code === predicItem.type &&
+                    new Date(saleItem.sale_date).toISOString().split('T')[0] === previousDateString
+                )
+                .reduce((total: number, saleItem: any) => total + Number(saleItem.Quantity), 0);
 
-          return {
-          type: predicItem.type,
-          sale: actualSalesForDateAndProduct || 0,
-          predic: Number(predicItem.result),
-          };
+              return {
+                type: predicItem.type,
+                sale: actualSalesForDateAndProduct || 0,
+                predic: Number(predicItem.result),
+              };
+            }
+          });
+        } else if (differenceType === 'weekly') {
+          // Filter predictive data for the past week
+          const weeklyPredictiveData = rawPredictiveData.filter(
+            (item: any) =>
+              item.date &&
+              new Date(item.date) >= new Date(startOfWeekString) &&
+              new Date(item.date) <= new Date(latestDate)
+          );
+
+          percentError = weeklyPredictiveData.map((predicItem: any) => {
+            if (predicItem.type === 'Daily') {
+              const actualWeeklySales = rawSalesData
+                .filter(
+                  (saleItem: any) =>
+                    new Date(saleItem.sale_date) >= new Date(startOfWeekString) &&
+                    new Date(saleItem.sale_date) <= new Date(latestDate)
+                )
+                .reduce((total: number, saleItem: any) => total + Number(saleItem.sales_amount), 0);
+
+              return {
+                type: predicItem.type,
+                sale: actualWeeklySales || 0,
+                predic: Number(predicItem.result),
+              };
+            } else {
+              const actualSalesForWeekAndProduct = rawSalesData
+                .filter(
+                  (saleItem: any) =>
+                    saleItem.Product_code === predicItem.type &&
+                    new Date(saleItem.sale_date) >= new Date(startOfWeekString) &&
+                    new Date(saleItem.sale_date) <= new Date(latestDate)
+                )
+                .reduce((total: number, saleItem: any) => total + Number(saleItem.Quantity), 0);
+
+              return {
+                type: predicItem.type,
+                sale: actualSalesForWeekAndProduct || 0,
+                predic: Number(predicItem.result),
+              };
+            }
+          });
         }
-        });
-      } else if (differenceType === 'weekly') {
-        // Filter predictive data for the past week
-        const weeklyPredictiveData = rawPredictiveData.filter(
-        (item: any) =>
-          item.date &&
-          new Date(item.date) >= new Date(startOfWeekString) &&
-          new Date(item.date) <= new Date(latestDate)
-        );
 
-        percentError = weeklyPredictiveData.map((predicItem: any) => {
-        if (predicItem.type === 'Daily') {
-          const actualWeeklySales = rawSalesData
-          .filter(
-            (saleItem: any) =>
-            new Date(saleItem.sale_date) >= new Date(startOfWeekString) &&
-            new Date(saleItem.sale_date) <= new Date(latestDate)
-          )
-          .reduce((total: number, saleItem: any) => total + Number(saleItem.sales_amount), 0);
-
-          return {
-          type: predicItem.type,
-          sale: actualWeeklySales || 0,
-          predic: Number(predicItem.result),
-          };
-        } else {
-          const actualSalesForWeekAndProduct = rawSalesData
-          .filter(
-            (saleItem: any) =>
-            saleItem.Product_code === predicItem.type &&
-            new Date(saleItem.sale_date) >= new Date(startOfWeekString) &&
-            new Date(saleItem.sale_date) <= new Date(latestDate)
-          )
-          .reduce((total: number, saleItem: any) => total + Number(saleItem.Quantity), 0);
-
-          return {
-          type: predicItem.type,
-          sale: actualSalesForWeekAndProduct || 0,
-          predic: Number(predicItem.result),
-          };
-        }
-        });
-      }
-
-      setDifference(percentError);
+        setDifference(percentError);
       } catch (error) {
-      console.error('Error fetching difference data:', error);
+        console.error('Error fetching difference data:', error);
       }
     };
 
@@ -255,18 +255,18 @@ export default function Dashboard() {
 
     const fetchPieData = async (startDate: string, endDate: string) => {
       try {
-      const response = await axios.get(`/graphpie/category-sales?startDate=${startDate}&endDate=${endDate}`);
-              const rawPieData = response.data;
+        const response = await axios.get(`/graphpie/category-sales?startDate=${startDate}&endDate=${endDate}`);
+        const rawPieData = response.data;
 
         // Map the data to include category, product count, average quantity, and average total sale
         const pieData = rawPieData.map((item: any) => ({
           category: item.category,
           productCount: item.productCount,
-        }));  
+        }));
 
-      setPieData(pieData);
+        setPieData(pieData);
       } catch (error) {
-      console.error('Error fetching pie data:', error);
+        console.error('Error fetching pie data:', error);
       }
     };
 
@@ -276,7 +276,7 @@ export default function Dashboard() {
     fetchWeatherData();
     fetchPredictives();
     fetchSalesdata();
-  }, [graphType,pieType, pieStartDate, pieEndDate]);
+  }, [graphType, pieType, pieStartDate, pieEndDate]);
 
   useEffect(() => {
     if (Predictive && Salesdata.length > 0) {
@@ -346,7 +346,7 @@ export default function Dashboard() {
           if (latestSalesDate && todayDate && (latestSalesDate === todayDate || latestSalesDate > todayDate)) {
             if (!isDialogOpen) { // Ensure it runs only once per reset 
               setIsDialogOpen(true);
-              axios.get('https://termpro-machinelerning-production.up.railway.app')
+              axios.get('http://localhost:8877/')
                 .then(response => {
                   console.log('API response:', response.data);
                   alert('Prediction completed successfully!');
@@ -385,7 +385,7 @@ export default function Dashboard() {
     );
   }
 
-  
+
   return (
     <Fragment>
       <LoadingDialog open={isDialogOpen} text="Prediction in progress. Please wait..." />
@@ -408,10 +408,10 @@ export default function Dashboard() {
             setPieStartDate(start);
             setPieEndDate(end);
           }}
-          onPieTypeChange={setPieType} 
-          percentError={difference} 
-          ondifferenceTypeChange={setdifferenceType}       
-          />
+          onPieTypeChange={setPieType}
+          percentError={difference}
+          ondifferenceTypeChange={setdifferenceType}
+        />
       </PageLayout>
     </Fragment>
   );
